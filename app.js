@@ -3,11 +3,12 @@ const { createBot, createProvider, createFlow, addKeyword, EVENTS, media, addAns
 const QRPortalWeb = require('@bot-whatsapp/portal')
 const BaileysProvider = require('@bot-whatsapp/provider/baileys')
 const MockAdapter = require('@bot-whatsapp/database/mock')
-const INACTIVITY = 600000
+const INACTIVITY = 10000
 
 //FINALIZACION DE LA CONVERSACIÓN POR TIEMPO DE EXPIRACIÓN
 const flowTime = addKeyword(EVENTS.ACTION)
-    .addAction(
+    .addAnswer(
+        ['¡Muchas gracias por contactarte con nosotros! la conversación ha finalizado por inactividad. No dudes en contactarte cuando lo necesites.'],
         async (ctx, { endFlow }) => {
             endFlow(`Se notifica que el usuario ha sido desconectado del chat por una inactividad de 10 minutos.`)
         }
@@ -15,26 +16,46 @@ const flowTime = addKeyword(EVENTS.ACTION)
 
 //SALUDO DE DESPEDIDA AL FINALIZAR LA CONVERSACIÓN
 const flowExit = addKeyword(EVENTS.ACTION)
-    .addAction(
-        async ({ endFlow }) => {
+    .addAnswer(
+        ['¡Gracias por contactarnos! Recuerde que estamos para ayudarle 👩🏻',
+            '\nVisitenos en https://jordelingenieriasas.com/'],
+        async (ctx, { flowDynamic, endFlow }) => {
             endFlow([
                 '¡Gracias por contactarnos! Recuerde que estamos para ayudarle 👩🏻',
-                '\nVisitenos en https://www.junicalmedical.com.co/'
+                '\nVisitenos en https://jordelingenieriasas.com/'
             ])
         }
     )
 
+const flowItemAccesor = addKeyword(EVENTS.ACTION)
+    .addAnswer(
+        [
+            'Un Momento Uno De Nuestros Accesores Se Comunicara Contigo.'
+        ], { capture: true, idle: INACTIVITY }, async (ctx, { gotoFlow, fallBack, flowDynamic }) => {
+            const object_text = ctx.message.extendedTextMessage ? ctx.message.extendedTextMessage.text : ctx.message.conversation;
+            if (ctx?.idleFallBack) {
+                console.log('SELECCIONÓ: INACTIVIDAD FINALIZACION DE LA CONVERSACION');
+                await gotoFlow(flowTime);
+            } else if (object_text === 'Terminar Sesion') {
+                console.log('SELECCIONÓ: FLOWEXIT FINALIZACION DE LA CONVERSACION');
+                await gotoFlow(flowExit);
+            } else {
+                await fallBack('entro fallback');
+            }
+        }
+    );
+
 const flowItem9 = addKeyword(EVENTS.ACTION)
     .addAnswer(
         [
-            
+
             '*Apreciado usuario:* Para radicar su solicitud como peticiones, quejas, reclamos, sugerencias y felicitaciones, por alguno de los siguientes medios:\n',
             '1️⃣ *Correo electronico:*\natencionalcliente@junicalmedical.com.co\n',
             '2️⃣ *Buzones de sugerencias:*\nUbicados en cada uno de los servicios de hospitalización, consulta externa, urgencias, medicina nuclear, imágenes diagnosticas, cardiología y archivo.\n',
             '3️⃣ *WhatsApp:*\n312 593 97 60\n',
             '4️⃣ *Página web:*\nhttps://www.junicalmedical.com.co/contactenos/\n',
             '5️⃣ *Formulario digital:*\nhttps://forms.office.com/r/JPPcJ7b0R5?origin=lprLink\n',
-            '6️⃣ *Presencial:*\nEn la Carrera 6 No. 20 - 115 Altos del Rosario. Girardot, área de atención al usuario de lunes a sábado de 7:00 A. M. a 7:00 P. M., jornada continua, domingos o festivos 11:00 A. M. a 3:00 P. M. debe diligenciar previamente el formulario\n https://servicioalcliente.junicalmedical.com.co/declaracion_del_usuario_relacionada.pdf\n',            
+            '6️⃣ *Presencial:*\nEn la Carrera 6 No. 20 - 115 Altos del Rosario. Girardot, área de atención al usuario de lunes a sábado de 7:00 A. M. a 7:00 P. M., jornada continua, domingos o festivos 11:00 A. M. a 3:00 P. M. debe diligenciar previamente el formulario\n https://servicioalcliente.junicalmedical.com.co/declaracion_del_usuario_relacionada.pdf\n',
             'La solicitud es atendida por orden de llegada en el menor tiempo posible.'
         ])
     .addAnswer(
@@ -634,10 +655,10 @@ const flowItem3 = addKeyword(EVENTS.ACTION)
 
 //OPCION 2 información importante sobre el dengue 👍
 const flowItem2 = addKeyword(EVENTS.ACTION)
-    .addAnswer('🦟 Información importante sobre el dengue.')
-    .addAnswer('.', {
+    .addAnswer('Lo sentimos, no tenemos acceso aún a esta función')
+    /*.addAnswer('.', {
         media: './assets/información_sobre_el_dengue.pdf',
-    })
+    })*/
     .addAnswer(
         [
             '👇 Seleccione alguna de las siguientes opciones:\n',
@@ -650,7 +671,7 @@ const flowItem2 = addKeyword(EVENTS.ACTION)
                 await gotoFlow(flowTime);
             } else if (object_text === '1') {
                 console.log('SELECCIONÓ: FLOWPRINCIPAL');
-                await gotoFlow(flowSecundario);
+                await gotoFlow(flowPrincipal);
             } else if (object_text === '0') {
                 console.log('SELECCIONÓ: FLOWEXIT FINALIZACION DE LA CONVERSACION');
                 await gotoFlow(flowExit);
@@ -662,14 +683,15 @@ const flowItem2 = addKeyword(EVENTS.ACTION)
 
 //OPCION 1 Reglamento interno
 const flowItem1 = addKeyword(EVENTS.ACTION)
-    .addAnswer('📓 Derechos y deberes de los usuarios.')
+    /*.addAnswer('📓 Derechos y deberes de los usuarios.')
     .addAnswer('.', {
         media: './assets/Derechos&deberes_usuarios.pdf',
-    })
+    })*/
     .addAnswer(
         [
             '👇 Seleccione alguna de las siguientes opciones:\n',
-            '1️⃣ Para devolverse al menú principal.',
+            '1️⃣ Fallos en su servicio.',
+            '2️⃣ Para devolverse al menú principal.',
             '0️⃣ Para finalizar la conversación.'
         ], { capture: true, idle: INACTIVITY }, async (ctx, { gotoFlow, fallBack, flowDynamic }) => {
             const object_text = ctx.message.extendedTextMessage ? ctx.message.extendedTextMessage.text : ctx.message.conversation;
@@ -679,6 +701,9 @@ const flowItem1 = addKeyword(EVENTS.ACTION)
             } else if (object_text === '1') {
                 console.log('SELECCIONÓ: FLOWPRINCIPAL');
                 await gotoFlow(flowSecundario);
+            } else if (object_text === '2') {
+                console.log('SELECCIONÓ: FLOWPRINCIPAL');
+                await gotoFlow(flowPrincipal);
             } else if (object_text === '0') {
                 console.log('SELECCIONÓ: FLOWEXIT FINALIZACION DE LA CONVERSACION');
                 await gotoFlow(flowExit);
@@ -692,15 +717,15 @@ const flowSecundario = addKeyword(EVENTS.WELCOME)
     .addAnswer(
         [
             '👇 Seleccione una de las siguientes opciones.\n',
-            '1️⃣ Consultar manual de derechos y deberes de los usuarios.',
-            '2️⃣ Boletin con información importante sobre el dengue.',
-            '3️⃣ Encuesta de  satisfacción.',
-            '4️⃣ Solicitud de citas.',
-            '5️⃣ Solicitud de dietas hospitalarias',
+            '1️⃣ Fallo en tu router',
+            '2️⃣ Intermitencia en tu internet',
+            '3️⃣ No tienes conexión',
+            '4️⃣ Para devolverse al menú principal.',
+            /*'5️⃣ Solicitud de dietas hospitalarias',
             '6️⃣ Contactos para atención al usuario.',
             '7️⃣ Contactos servicios de consulta externa.',
             '8️⃣ Requisitos para la entrega de la historia clínica.',
-            '9️⃣ Peticiones, quejas y reclamos',
+            '9️⃣ Peticiones, quejas y reclamos',*/
             '0️⃣ Para finalizar la conversación.',
             '\n¡Gracias por contactarnos! Recuerde que estamos para ayudarle 👩🏻'
         ], { capture: true, idle: INACTIVITY, }, async (ctx, { gotoFlow, fallBack, flowDynamic }) => {
@@ -712,17 +737,17 @@ const flowSecundario = addKeyword(EVENTS.WELCOME)
                 await gotoFlow(flowTime);
             } else if (object_text === '1') {
                 console.log('SELECCIONÓ: OPCION 1');
-                await gotoFlow(flowItem1);
+                await gotoFlow(flowItemAccesor);
             } else if (object_text === '2') {
                 console.log('SELECCIONÓ: OPCION 2');
-                await gotoFlow(flowItem2);
+                await gotoFlow(flowItemAccesor);
             } else if (object_text === '3') {
                 console.log('SELECCIONÓ: OPCION 3');
-                await gotoFlow(flowItem3);
+                await gotoFlow(flowItemAccesor);
             } else if (object_text === '4') {
                 console.log('SELECCIONÓ: OPCION 4');
-                await gotoFlow(flowItem4);
-            } else if (object_text === '5') {
+                await gotoFlow(flowItemAccesor);
+            } /*else if (object_text === '5') {
                 console.log('SELECCIONÓ: OPCION 5');
                 await gotoFlow(flowItem5);
             } else if (object_text === '6') {
@@ -737,7 +762,7 @@ const flowSecundario = addKeyword(EVENTS.WELCOME)
             } else if (object_text === '9') {
                 console.log('SELECCIONÓ: OPCION 9');
                 await gotoFlow(flowItem9);
-            } else if (object_text === '0') {
+            }*/ else if (object_text === '0') {
                 console.log('SELECCIONÓ: OPCION EXIT');
                 await gotoFlow(flowExit);
             } else {
@@ -746,21 +771,21 @@ const flowSecundario = addKeyword(EVENTS.WELCOME)
         })
 
 const flowPrincipal = addKeyword(EVENTS.WELCOME)
-    .addAnswer('🙌 Bienvenido, soy el asistente virtual informativo de Junical Medical S. A. S.')
-    .addAnswer('Le informamos que al continuar acepta las Políticas de Tratamiento de Información (Datos personales) (https://alfonso.junicalmedical.com.co/politica_de_privacidad_y_tratamiento_de_datos_personales) de Junical Medical S. A. S.')
+    .addAnswer('🙌 Bienvenido, soy el asistente virtual informativo de Jordel ingenieria S. A. S.')
+    //.addAnswer('Le informamos que al continuar acepta las Políticas de Tratamiento de Información (Datos personales) (https://alfonso.junicalmedical.com.co/politica_de_privacidad_y_tratamiento_de_datos_personales) de Junical Medical S. A. S.')
     .addAnswer(
         [
             '👇 Seleccione una de las siguientes opciones.\n',
-            '1️⃣ Consultar manual de derechos y deberes de los usuarios.',
-            '2️⃣ Boletin con información importante sobre el dengue.',
-            '3️⃣ Encuesta de  satisfacción.',
-            '4️⃣ Solicitud de citas.',
-            '5️⃣ Solicitud de dietas hospitalarias.',
-            '6️⃣ Contactos para atención al usuario.',
-            '7️⃣ Contactos servicios de consulta externa.',
-            '8️⃣ Requisitos para la entrega de la historia clínica.',
-            '9️⃣ Peticiones, quejas y reclamos',
-            '0️⃣ Para finalizar la conversación.',
+            '1️⃣ Soporte técnico.',
+            '2️⃣ Atención al cliente.',
+            '3️⃣ Pagos.',
+            '4️⃣ Radicar pqr.',
+            '5️⃣ Fallos en tus servicios.',
+            //'6️⃣ Contactos para atención al usuario.',
+            //'7️⃣ Contactos servicios de consulta externa.',
+            //'8️⃣ Requisitos para la entrega de la historia clínica.',
+            //'9️⃣ Peticiones, quejas y reclamos',
+            //'0️⃣ Para finalizar la conversación.',
             '\n¡Gracias por contactarnos! Recuerde que estamos para ayudarle 👩🏻'
         ], { capture: true, idle: INACTIVITY, delay: 3000, }, async (ctx, { gotoFlow, fallBack, flowDynamic }) => {
             const object_text = ctx.message.extendedTextMessage ? ctx.message.extendedTextMessage.text : ctx.message.conversation;
@@ -777,25 +802,25 @@ const flowPrincipal = addKeyword(EVENTS.WELCOME)
                 await gotoFlow(flowItem2);
             } else if (object_text === '3') {
                 console.log('SELECCIONÓ: OPCION 3');
-                await gotoFlow(flowItem3);
+                await gotoFlow(flowItem2);
             } else if (object_text === '4') {
                 console.log('SELECCIONÓ: OPCION 4');
-                await gotoFlow(flowItem4);
+                await gotoFlow(flowItem2);
             } else if (object_text === '5') {
                 console.log('SELECCIONÓ: OPCION 5');
-                await gotoFlow(flowItem5);
+                await gotoFlow(flowItem2);
             } else if (object_text === '6') {
                 console.log('SELECCIONÓ: OPCION 6');
-                await gotoFlow(flowItem6);
+                await gotoFlow(flowItem2);
             } else if (object_text === '7') {
                 console.log('SELECCIONÓ: OPCION 7');
-                await gotoFlow(flowItem7);
+                await gotoFlow(flowItem2);
             } else if (object_text === '8') {
                 console.log('SELECCIONÓ: OPCION 8');
-                await gotoFlow(flowItem8);
+                await gotoFlow(flowItem2);
             } else if (object_text === '9') {
                 console.log('SELECCIONÓ: OPCION 9');
-                await gotoFlow(flowItem9);
+                await gotoFlow(flowItem2);
             } else if (object_text === '0') {
                 console.log('SELECCIONÓ: OPCION EXIT');
                 await gotoFlow(flowExit);
@@ -807,7 +832,7 @@ const flowPrincipal = addKeyword(EVENTS.WELCOME)
 
 const main = async () => {
     const adapterDB = new MockAdapter()
-    const adapterFlow = createFlow([flowPrincipal, flowSecundario, flowItem1, flowItem2, flowItem3, flowItem4, flowItem5, flowItem6, flowItem7, flowItem71, flowItem72, flowItem73, flowItem74, flowItem75, flowItem8, flowItem81, flowItem82, flowItem83, flowItem84, flowItem9, flowExit, flowTime])
+    const adapterFlow = createFlow([flowPrincipal, flowSecundario, flowItem1, flowItem2, flowItem3, flowItem4, flowItem5, flowItem6, flowItem7, flowItem71, flowItem72, flowItem73, flowItem74, flowItem75, flowItem8, flowItem81, flowItem82, flowItem83, flowItem84, flowItem9,flowItemAccesor, flowExit, flowTime])
     const adapterProvider = createProvider(BaileysProvider)
 
 
@@ -815,8 +840,8 @@ const main = async () => {
         flow: adapterFlow,
         provider: adapterProvider,
         database: adapterDB,
-    },{
-        blackList:'3156078058'
+    }, {
+        blackList: '3156078058'
     })
 
     QRPortalWeb({ port: 4000 });
