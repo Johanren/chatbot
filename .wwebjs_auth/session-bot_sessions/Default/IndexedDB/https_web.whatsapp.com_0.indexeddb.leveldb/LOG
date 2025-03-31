@@ -1,0 +1,27 @@
+2025/03/31-15:48:13.665 30c8 Reusing MANIFEST C:\xampp\htdocs\chatbot\.wwebjs_auth\session-bot_sessions\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/03/31-15:48:13.753 30c8 Recovering log #2038
+2025/03/31-15:48:13.783 30c8 Reusing old log C:\xampp\htdocs\chatbot\.wwebjs_auth\session-bot_sessions\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/002038.log 
+2025/03/31-15:48:22.329 25d0 Level-0 table #2050: started
+2025/03/31-15:48:22.504 25d0 Level-0 table #2050: 154974 bytes OK
+2025/03/31-15:48:22.572 25d0 Delete type=0 #2038
+2025/03/31-15:48:22.574 3360 Manual compaction at level-0 from ' \x16\x01\x00\x00\x00' @ 72057594037927935 : 1 .. ' \x17\x01\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/03/31-15:48:28.637 3360 Compacting 1@1 + 8@2 files
+2025/03/31-15:48:29.089 3360 Generated table #2051@1: 83969 keys, 2231169 bytes
+2025/03/31-15:48:29.651 3360 Generated table #2052@1: 94532 keys, 2244933 bytes
+2025/03/31-15:48:30.160 3360 Generated table #2053@1: 101464 keys, 2254723 bytes
+2025/03/31-15:48:30.755 3360 Generated table #2054@1: 72513 keys, 2348017 bytes
+2025/03/31-15:48:31.061 3360 Generated table #2055@1: 13222 keys, 2168093 bytes
+2025/03/31-15:48:31.485 3360 Generated table #2056@1: 32716 keys, 2215143 bytes
+2025/03/31-15:48:31.829 3360 Generated table #2057@1: 64518 keys, 2205017 bytes
+2025/03/31-15:48:32.160 3360 Generated table #2058@1: 80517 keys, 1622734 bytes
+2025/03/31-15:48:32.160 3360 Compacted 1@1 + 8@2 files => 17289829 bytes
+2025/03/31-15:48:32.226 3360 compacted to: files[ 0 0 8 0 0 0 0 ]
+2025/03/31-15:48:32.227 3360 Delete type=2 #2040
+2025/03/31-15:48:32.227 3360 Delete type=2 #2041
+2025/03/31-15:48:32.227 3360 Delete type=2 #2042
+2025/03/31-15:48:32.227 3360 Delete type=2 #2043
+2025/03/31-15:48:32.227 3360 Delete type=2 #2044
+2025/03/31-15:48:32.227 3360 Delete type=2 #2045
+2025/03/31-15:48:32.227 3360 Delete type=2 #2046
+2025/03/31-15:48:32.227 3360 Delete type=2 #2047
+2025/03/31-15:48:32.227 3360 Delete type=2 #2050
