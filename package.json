@@ -15,6 +15,7 @@
         "@bot-whatsapp/database": "latest",
         "@bot-whatsapp/portal": "latest",
         "@bot-whatsapp/provider": "latest",
+        "express": "^5.1.0",
         "whatsapp-web.js": "^1.27.0"
     },
     "devDependencies": {
@@ -23,4 +24,5 @@
     },
     "author": "",
     "license": "ISC"
+    
 }

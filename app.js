@@ -25,25 +25,54 @@ const reiniciarTemporizador = (user) => {
     if (temporizadores.has(user)) {
         clearTimeout(temporizadores.get(user));
     }
+
     const timer = setTimeout(async () => {
-        if (sesiones.has(user)) {
-            sesiones.get(user).sendMessage("⏳ Has estado inactivo por más de 10 minutos. Se cerrará la sesión.");
+        const sesion = sesiones.get(user); // Obtiene la sesión del usuario
+        if (sesion && typeof sesion.sendMessage === "function") {
+            sesion.sendMessage("⏳ Has estado inactivo por más de 10 minutos. Se cerrará la sesión.");
             limpiarEstadoUsuario(user);
+        } else {
+            console.error(`❌ Error: La sesión para el usuario ${user} no es válida.`);
         }
     }, TIMEOUT_INACTIVIDAD);
 
     temporizadores.set(user, timer);
 };
 
+/*Conexion con pagina web*/
+
+const WebSocket = require('ws');
+const ws = new WebSocket('ws://localhost:3000');
+
+ws.on('open', () => {
+    console.log("📡 Conectado al servidor WebSocket");
+});
+
+ws.on('error', (error) => {
+    console.error("❌ Error en WebSocket:", error);
+});
+
+const enviarMensajeWeb = (usuario, asesor, mensaje) => {
+    if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ tipo: 'nuevoMensaje', usuario, asesor, mensaje }));
+    } else {
+        console.warn("⚠️ No se pudo enviar el mensaje: WebSocket no está conectado.");
+    }
+};
+
 /*Flujo Principal*/
 
 const flowPrincipalAsesor = addKeyword(EVENTS.WELCOME)
     .addAction(async (ctx, { gotoFlow }) => {
+        const usuarioID = ctx.from;
+        const mensaje = ctx.body.trim();
         const estado = getEstadoUsuario(ctx.from);
 
         // Si el usuario está esperando un asesor, bloquea el flujo principal
         if (estado?.esperandoAsesor) {
             console.log("🔒 Actualmente estás esperando a un asesor. No se ejecutará el flujo principal.");
+            await console.log("📩 *Puedes seguir enviando mensajes. Un asesor te responderá pronto.*");
+            enviarMensajeWeb(usuarioID, "Asesor 1", mensaje);
             return;  // No hace nada, evitando el flujo
         }
 
@@ -296,23 +325,27 @@ if (!global.tiempoInactividad) {
 const flowChatAsesor = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, { flowDynamic, gotoFlow }) => {
         const usuarioID = ctx.from;
+        const mensaje = ctx.body.trim();
+
+        // Enviar mensaje al WebSocket
+        enviarMensajeWeb(usuarioID, "Asesor 1", mensaje);
+
+        if (mensaje === "0") {
+            limpiarEstadoUsuario(usuarioID);
+            return gotoFlow(flowMenuPrincipal);
+        }
 
         // Marcar como esperando asesor
         setEstadoUsuario(usuarioID, { esperandoAsesor: true });
 
-        if (ctx.body.trim() === "0") {
-            limpiarEstadoUsuario(usuarioID);
-            return gotoFlow(flowMenuPrincipal); // Regresar al flujo principal
-        }
-
-        // Mensaje después de 2 segundos
+        // Respuesta automática después de 2 segundos
         setTimeout(async () => {
             await flowDynamic("👇 *En un momento, uno de nuestros asesores se comunicará contigo.*");
         }, 2000);
 
-        // Configurar recordatorio de inactividad después de 5 minutos (300,000 ms)
+        // Configurar recordatorio de inactividad
         if (global.tiempoInactividad[usuarioID]) {
-            clearTimeout(global.tiempoInactividad[usuarioID]); // Limpiar cualquier temporizador previo
+            clearTimeout(global.tiempoInactividad[usuarioID]);
         }
 
         global.tiempoInactividad[usuarioID] = setTimeout(async () => {
@@ -320,7 +353,7 @@ const flowChatAsesor = addKeyword(EVENTS.ACTION)
             if (estado?.esperandoAsesor) {
                 await flowDynamic("⏳ Parece que has estado inactivo. Si deseas cerrar la conversación, responde con *0️⃣*.");
             }
-        }, 300000); // 5 minutos en milisegundos
+        }, 300000); // 5 minutos
     });
 
 
