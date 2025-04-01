@@ -1,29 +1,29 @@
-2025/03/31-23:20:08.293 634 Reusing MANIFEST C:\xampp\htdocs\chatbot\.wwebjs_auth\session-bot_sessions\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/03/31-23:20:08.296 634 Recovering log #2406
-2025/03/31-23:20:08.436 634 Reusing old log C:\xampp\htdocs\chatbot\.wwebjs_auth\session-bot_sessions\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/002406.log 
-2025/03/31-23:20:08.437 634 Delete type=2 #2396
-2025/03/31-23:20:08.437 634 Delete type=2 #2397
-2025/03/31-23:20:08.437 634 Delete type=2 #2398
-2025/03/31-23:20:08.437 634 Delete type=2 #2399
-2025/03/31-23:20:08.437 634 Delete type=2 #2400
-2025/03/31-23:20:08.437 634 Delete type=2 #2401
-2025/03/31-23:20:08.437 634 Delete type=2 #2402
-2025/03/31-23:20:08.437 634 Delete type=2 #2403
-2025/03/31-23:20:08.439 634 Delete type=2 #2404
-2025/03/31-23:20:08.439 634 Delete type=2 #2407
-2025/03/31-23:20:11.746 2464 Level-0 table #2419: started
-2025/03/31-23:20:11.903 2464 Level-0 table #2419: 349013 bytes OK
-2025/03/31-23:20:11.962 2464 Delete type=0 #2406
-2025/03/31-23:20:11.992 2464 Manual compaction at level-0 from ' 5\x01\x00\x00\x00' @ 72057594037927935 : 1 .. ' 6\x01\x00\x00\x00' @ 0 : 0; will stop at (end)
-2025/03/31-23:20:19.498 1598 Compacting 1@1 + 9@2 files
-2025/03/31-23:20:20.203 1598 Generated table #2420@1: 84705 keys, 2234100 bytes
-2025/03/31-23:20:20.978 1598 Generated table #2421@1: 94504 keys, 2245958 bytes
-2025/03/31-23:20:21.609 1598 Generated table #2422@1: 100144 keys, 2252537 bytes
-2025/03/31-23:20:22.143 1598 Generated table #2423@1: 101697 keys, 2254614 bytes
-2025/03/31-23:20:22.503 1598 Generated table #2424@1: 19080 keys, 2313834 bytes
-2025/03/31-23:20:23.095 1598 Generated table #2425@1: 22025 keys, 2203643 bytes
-2025/03/31-23:20:23.606 1598 Generated table #2426@1: 19945 keys, 2163470 bytes
-2025/03/31-23:20:25.380 1598 Generated table #2427@1: 105799 keys, 2256131 bytes
-2025/03/31-23:20:26.362 1598 Generated table #2428@1: 47738 keys, 980500 bytes
-2025/03/31-23:20:26.362 1598 Compacted 1@1 + 9@2 files => 18904787 bytes
-2025/03/31-23:20:26.401 1598 compacted to: files[ 0 0 9 0 0 0 0 ]
+2025/04/01-00:00:32.071 1560 Reusing MANIFEST C:\xampp\htdocs\chatbot\.wwebjs_auth\session-bot_sessions\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/04/01-00:00:32.073 1560 Recovering log #2454
+2025/04/01-00:00:32.295 1560 Reusing old log C:\xampp\htdocs\chatbot\.wwebjs_auth\session-bot_sessions\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/002454.log 
+2025/04/01-00:00:32.296 1560 Delete type=2 #2444
+2025/04/01-00:00:32.296 1560 Delete type=2 #2445
+2025/04/01-00:00:32.296 1560 Delete type=2 #2446
+2025/04/01-00:00:32.296 1560 Delete type=2 #2447
+2025/04/01-00:00:32.296 1560 Delete type=2 #2448
+2025/04/01-00:00:32.296 1560 Delete type=2 #2449
+2025/04/01-00:00:32.296 1560 Delete type=2 #2450
+2025/04/01-00:00:32.299 1560 Delete type=2 #2451
+2025/04/01-00:00:32.299 1560 Delete type=2 #2452
+2025/04/01-00:00:32.299 1560 Delete type=2 #2455
+2025/04/01-00:00:41.041 1014 Level-0 table #2467: started
+2025/04/01-00:00:41.403 1014 Level-0 table #2467: 513517 bytes OK
+2025/04/01-00:00:42.027 1014 Delete type=0 #2454
+2025/04/01-00:00:42.053 2fe8 Manual compaction at level-0 from ' 9\x01\x00\x00\x00' @ 72057594037927935 : 1 .. ' :\x01\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/04/01-00:01:11.052 2738 Compacting 1@1 + 9@2 files
+2025/04/01-00:01:11.582 2738 Generated table #2468@1: 84033 keys, 2231348 bytes
+2025/04/01-00:01:14.403 2738 Generated table #2469@1: 94506 keys, 2246164 bytes
+2025/04/01-00:01:17.418 2738 Generated table #2470@1: 99769 keys, 2251551 bytes
+2025/04/01-00:01:18.853 2738 Generated table #2471@1: 101697 keys, 2254358 bytes
+2025/04/01-00:01:19.857 2738 Generated table #2472@1: 27033 keys, 2328253 bytes
+2025/04/01-00:01:20.413 2738 Generated table #2473@1: 19404 keys, 2196086 bytes
+2025/04/01-00:01:20.804 2738 Generated table #2474@1: 22581 keys, 2173008 bytes
+2025/04/01-00:01:21.411 2738 Generated table #2475@1: 91607 keys, 2239484 bytes
+2025/04/01-00:01:21.750 2738 Generated table #2476@1: 65797 keys, 1341331 bytes
+2025/04/01-00:01:21.750 2738 Compacted 1@1 + 9@2 files => 19261583 bytes
+2025/04/01-00:01:21.856 2738 compacted to: files[ 0 0 9 0 0 0 0 ]

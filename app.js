@@ -6,6 +6,27 @@ const TIMEOUT_INACTIVIDAD = 10 * 60 * 1000; // 10 minutos
 const sesiones = new Map();
 const temporizadores = new Map();
 
+/*Conexion con pagina web*/
+
+const WebSocket = require('ws');
+const ws = new WebSocket('ws://localhost:3000');
+
+ws.on('open', () => {
+    console.log("📡 Conectado al servidor WebSocket");
+});
+
+ws.on('error', (error) => {
+    console.error("❌ Error en WebSocket:", error);
+});
+
+const enviarMensajeWeb = (usuario, asesor, mensaje) => {
+    if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ tipo: 'nuevoMensaje', usuario, asesor, mensaje }));
+    } else {
+        console.warn("⚠️ No se pudo enviar el mensaje: WebSocket no está conectado.");
+    }
+};
+
 const setEstadoUsuario = (user, estado) => {
     sesiones.set(user, estado);
     reiniciarTemporizador(user);
@@ -37,27 +58,6 @@ const reiniciarTemporizador = (user) => {
     }, TIMEOUT_INACTIVIDAD);
 
     temporizadores.set(user, timer);
-};
-
-/*Conexion con pagina web*/
-
-const WebSocket = require('ws');
-const ws = new WebSocket('ws://localhost:3000');
-
-ws.on('open', () => {
-    console.log("📡 Conectado al servidor WebSocket");
-});
-
-ws.on('error', (error) => {
-    console.error("❌ Error en WebSocket:", error);
-});
-
-const enviarMensajeWeb = (usuario, asesor, mensaje) => {
-    if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ tipo: 'nuevoMensaje', usuario, asesor, mensaje }));
-    } else {
-        console.warn("⚠️ No se pudo enviar el mensaje: WebSocket no está conectado.");
-    }
 };
 
 /*Flujo Principal*/
@@ -122,13 +122,13 @@ const flowMenuPrincipal = addKeyword(EVENTS.ACTION)
 const flowCerrarSesion = addKeyword("cerrar sesión")
     .addAnswer("🔒 ¿Seguro que quieres cerrar sesión? Escribe *sí* o *no*.",
         { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
-            if (ctx.body.trim().toLowerCase() === "si"  || ctx.body.trim().toLowerCase() === "Si") {
+            if (ctx.body.trim().toLowerCase() === "si" || ctx.body.trim().toLowerCase() === "Si") {
                 limpiarEstadoUsuario(ctx.from);
                 return flowDynamic("✅ Has cerrado sesión. Escribe *hola* para volver a activarlo.");
             }
             flowDynamic("🔙 Regresando al menú principal...");
             await new Promise(resolve => setTimeout(resolve, 1000)); // Espera 1 segundo antes de ir al flujo
-            return gotoFlow(flowMenuPrincipal) 
+            return gotoFlow(flowMenuPrincipal)
         });
 
 const flowVolverMenuPrincipal = addKeyword(["9"])
@@ -325,7 +325,7 @@ if (!global.tiempoInactividad) {
 const flowChatAsesor = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, { flowDynamic, gotoFlow }) => {
         const usuarioID = ctx.from;
-        const mensaje = ctx.body.trim();
+        let mensaje = ctx.body.trim();
 
         // Enviar mensaje al WebSocket
         enviarMensajeWeb(usuarioID, "Asesor 1", mensaje);
@@ -352,6 +352,8 @@ const flowChatAsesor = addKeyword(EVENTS.ACTION)
             const estado = getEstadoUsuario(usuarioID);
             if (estado?.esperandoAsesor) {
                 await flowDynamic("⏳ Parece que has estado inactivo. Si deseas cerrar la conversación, responde con *0️⃣*.");
+                mensaje = "Inactividad por el usuario";
+                enviarMensajeWeb(usuarioID, "Asesor 1", mensaje);
             }
         }, 300000); // 5 minutos
     });
