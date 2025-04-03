@@ -7,6 +7,7 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 let chats = {}; // Almacenará los chats en memoria
+let chatsWeb = {};
 
 // Código de server.js
 
@@ -18,8 +19,8 @@ wss.on('connection', (ws) => {
     console.log("✅ Nuevo cliente conectado");
 
     ws.on('message', (message) => {
-        console.log("📩 Mensaje recibido:", message.toString());
-        
+        //console.log("📩 Mensaje recibido:", message.toString());
+
         try {
             let data = JSON.parse(message);
 
@@ -29,7 +30,7 @@ wss.on('connection', (ws) => {
                 const hora = fechaHoraActual.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Formato de hora (hh:mm)
 
                 if (!chats[data.usuario]) chats[data.usuario] = [];
-                
+
                 // Almacenamos el mensaje con fecha y hora
                 chats[data.usuario].push({
                     asesor: data.asesor,
@@ -42,6 +43,27 @@ wss.on('connection', (ws) => {
                 wss.clients.forEach(client => {
                     if (client.readyState === WebSocket.OPEN) {
                         client.send(JSON.stringify({ tipo: 'actualizar', chats }));
+                    }
+                });
+            }
+            if (data.tipo === 'mensajeWeb') {
+                const fechaHoraActual = new Date();
+                const fecha = fechaHoraActual.toLocaleDateString(); // Formato de fecha (dd/mm/yyyy)
+                const hora = fechaHoraActual.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Formato de hora (hh:mm)
+
+                if (!chatsWeb[data.usuarioWeb]) chatsWeb[data.usuarioWeb] = [];
+
+                // Almacenamos el mensaje con fecha y hora
+                chatsWeb[data.usuarioWeb].push({
+                    usuario: data.usuarioWeb,
+                    mensaje: data.mensajeWeb,
+                    fecha: fecha,  // Fecha en formato dd/mm/yyyy
+                    hora: hora     // Hora en formato hh:mm
+                });
+                // Enviar el mensaje actualizado a todos los clientes conectados
+                wss.clients.forEach(client => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify({ tipo: 'actualizarWeb', chatsWeb }));
                     }
                 });
             }

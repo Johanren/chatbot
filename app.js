@@ -6,10 +6,53 @@ const TIMEOUT_INACTIVIDAD = 10 * 60 * 1000; // 10 minutos
 const sesiones = new Map();
 const temporizadores = new Map();
 
+const { useMultiFileAuthState, makeWASocket } = require('@whiskeysockets/baileys');
+const qrcode = require('qrcode-terminal');
+let sock; // Declarar sock de forma global
+
+async function connectToWhatsApp() {
+    const { state, saveCreds } = await useMultiFileAuthState('./auth_info_baileys');
+    sock = makeWASocket({
+        auth: state,
+        printQRInTerminal: true,
+    });
+
+    sock.ev.on('creds.update', saveCreds);
+
+    sock.ev.on('connection.update', (update) => {
+        const { connection, lastDisconnect, qr } = update;
+
+        if (qr) {
+            console.log("📲 Escanea este código QR para conectar tu bot:");
+            qrcode.generate(qr, { small: true });
+        }
+
+        if (connection === 'close') {
+            const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
+            console.log("❌ Conexión cerrada", shouldReconnect ? "→ Intentando reconectar..." : "→ Sesión cerrada permanentemente.");
+
+            if (shouldReconnect) {
+                connectToWhatsApp(); // Reconectar automáticamente
+            } else {
+                console.log("⚠ Debes volver a escanear el código QR.");
+            }
+        } else if (connection === 'open') {
+            console.log("✅ Conectado a WhatsApp");
+        }
+    });
+
+    return sock;
+}
+
+connectToWhatsApp();
+
 /*Conexion con pagina web*/
 
 const WebSocket = require('ws');
 const ws = new WebSocket('ws://localhost:3000');
+ws.on('open', () => {
+    console.log("📡 Conectado al servidor Web");
+});
 
 ws.on('open', () => {
     console.log("📡 Conectado al servidor WebSocket");
@@ -48,17 +91,93 @@ const reiniciarTemporizador = (user) => {
     }
 
     const timer = setTimeout(async () => {
-        const sesion = sesiones.get(user); // Obtiene la sesión del usuario
-        if (sesion && typeof sesion.sendMessage === "function") {
-            sesion.sendMessage("⏳ Has estado inactivo por más de 10 minutos. Se cerrará la sesión.");
-            limpiarEstadoUsuario(user);
-        } else {
-            console.error(`❌ Error: La sesión para el usuario ${user} no es válida.`);
+        let sesion = sesiones.get(user); // Obtener la sesión del usuario
+
+        // Validar si la sesión existe
+        if (!sesion) {
+            console.error(`❌ Error: No existe sesión para el usuario ${user}. Se creará una temporal.`);
+            sesion = {
+                esperandoAsesor: false, // Valor por defecto
+                sendMessage: (msg) => {
+                    console.log(`Mensaje a ${user}: ${msg}`);
+                }
+            };
+            sesiones.set(user, sesion); // Guardar la nueva sesión
         }
+
+        // Validar si la sesión tiene el método sendMessage
+        if (typeof sesion.sendMessage !== "function") {
+            console.error(`❌ Error: La sesión para el usuario ${user} no tiene sendMessage. Se creará.`);
+            sesion.sendMessage = (msg) => {
+                console.log(`Mensaje a ${user}: ${msg}`);
+            };
+            sesiones.set(user, sesion); // Actualizar la sesión
+        }
+
+        sesion.sendMessage("⏳ Has estado inactivo por más de 10 minutos. Se cerrará la sesión.");
+
+        // Si el usuario está esperando un asesor, notificar al sistema web
+        if (sesion.esperandoAsesor) {
+            console.log("Sesión terminada por inactividad del usuario.");
+            enviarMensajeWeb(user, "Asesor 1", "Sesión terminada por inactividad del usuario");
+            return;
+        }
+
+        // Limpiar estado del usuario y cerrar sesión
+        limpiarEstadoUsuario(user);
+        sesiones.delete(user); // Eliminar la sesión del mapa
+
     }, TIMEOUT_INACTIVIDAD);
 
     temporizadores.set(user, timer);
 };
+
+ws.onmessage = (event) => {
+    try {
+        const data = JSON.parse(event.data);
+
+        if (data.tipo === "actualizarWeb") {
+            // Verificar si data.chatsWeb es un objeto válido
+            if (typeof data.chatsWeb !== 'object' || data.chatsWeb === null) {
+                console.error("❌ Error: data.chatsWeb no es un objeto válido", data.chatsWeb);
+                return;
+            }
+
+            // Recorrer los usuarios y obtener solo el último mensaje
+            Object.entries(data.chatsWeb).forEach(([usuario, mensajes]) => {
+                if (!Array.isArray(mensajes) || mensajes.length === 0) {
+                    console.error(`❌ Error: No hay mensajes válidos para el usuario ${usuario}`, mensajes);
+                    return;
+                }
+
+                // Obtener el último mensaje del array
+                const ultimoMensaje = mensajes[mensajes.length - 1];
+
+                console.log(`✉️ Enviando último mensaje a ${usuario}:`, ultimoMensaje.mensaje);
+                enviarMensajeWhatsApp(usuario, ultimoMensaje.mensaje);
+            });
+        }
+    } catch (error) {
+        console.error("❌ Error al procesar el mensaje WebSocket:", error);
+    }
+};
+
+
+async function enviarMensajeWhatsApp(usuario, mensaje) {
+    if (!sock) {
+        console.error("⚠️ Error: `sock` no está inicializado. Intentando reconectar...");
+        await connectToWhatsApp();
+        return;
+    }
+
+    try {
+        console.log(`🚀 Enviando a WhatsApp -> Usuario: ${usuario}, Mensaje: "${mensaje}"`);
+        await sock.sendMessage(`${usuario}@s.whatsapp.net`, { text: mensaje });
+        console.log("✅ Mensaje enviado correctamente.");
+    } catch (error) {
+        console.error("❌ Error al enviar mensaje:", error);
+    }
+}
 
 /*Flujo Principal*/
 
@@ -139,6 +258,16 @@ const flowVolverMenuPrincipal = addKeyword(["9"])
 
 const flowCerrarConversacion = addKeyword(["0"])
     .addAnswer("✅ *Conversación cerrada.*", {}, async (ctx, { flowDynamic, gotoFlow }) => {
+        const estado = getEstadoUsuario(ctx.from);
+        if (estado?.esperandoAsesor) {
+            const usuarioID = ctx.from;
+            let mensaje = "Conversacion terminada por el cliente";
+            console.log("Conversacion terminda");
+            await console.log("📩 *Puedes seguir enviando mensajes. Un asesor te responderá pronto.*");
+            enviarMensajeWeb(usuarioID, "Asesor 1", mensaje);
+            limpiarEstadoUsuario(usuarioID);
+            return gotoFlow(flowMenuPrincipal);  // No hace nada, evitando el flujo
+        }
         await new Promise(resolve => setTimeout(resolve, 1000)); // Espera 1 segundo antes de ir al flujo
         return gotoFlow(flowMenuPrincipal);
     });
