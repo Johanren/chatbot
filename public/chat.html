@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat en Vivo - Asesores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background: #d5dfe5;
+        }
+
+        .sidebar {
+            width: 25%;
+            background: #96efff;
+            /* Verde oscuro */
+            color: white;
+            /* Texto blanco para mejor contraste */
+            padding: 15px;
+            overflow-y: auto;
+            border-right: 2px solid #000000;
+            /* Verde más oscuro para el borde */
+            transition: background 0.3s ease-in-out;
+            /* Efecto de transición */
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #8c8a89;
+            /* Verde claro para el título */
+        }
+
+        #user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            /* Espacio entre usuarios */
+        }
+
+        .user {
+            background: #2f6891;
+            /* Verde intermedio */
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: left;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .user:hover {
+            background: #2483e1;
+            /* Verde más claro al pasar el cursor */
+            transform: scale(1.05);
+            /* Efecto de aumento ligero */
+        }
+
+        .user:active {
+            background: #2483e1;
+            /* Verde más oscuro al hacer clic */
+        }
+
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background: #e7bf9c;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: #fff;
+            border-radius: 5px;
+            display: none;
+            flex-direction: column;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+            font-size: 14px;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .asesor {
+            background: #dcf8c6;
+            align-self: flex-end;
+            text-align: right;
+            border-bottom-right-radius: 0;
+        }
+
+        .asesor-web {
+            background-color: #25d366;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+
+        .cliente {
+            background: #ffffff;
+            align-self: flex-start;
+            text-align: left;
+            border-bottom-left-radius: 0;
+            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .timestamp {
+            font-size: 10px;
+            color: gray;
+            display: block;
+            text-align: right;
+            margin-top: 3px;
+        }
+
+        .date-separator {
+            text-align: center;
+            font-weight: bold;
+            color: gray;
+            margin: 10px 0;
+        }
+
+        .input-container {
+            display: none;
+            padding: 10px;
+            background: #f0f0f0;
+            border-top: 1px solid #ccc;
+        }
+
+        .input-container input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .input-container button {
+            margin-left: 10px;
+            padding: 10px;
+            background: #128c7e;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .input-container button:hover {
+            background: #075e54;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Lista de usuarios -->
+    <div class="sidebar">
+        <h2>Usuarios</h2>
+        <div id="user-list"></div>
+    </div>
+
+    <!-- Contenedor del chat -->
+    <div class="chat-container">
+        <div class="header" id="chat-title">Selecciona un usuario para ver el chat</div>
+        <div class="messages" id="chat-messages"></div>
+
+        <!-- Entrada de mensaje -->
+        <div class="input-container" id="input-container">
+            <input type="text" id="message-input" placeholder="Escribe un mensaje...">
+            <button onclick="enviarMensaje()">Enviar</button>
+        </div>
+    </div>
+    <button onclick="borrarMemoriaChats()">Borrar Chats</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            let asesorActual = "";
+            const secretKey = "JohanAna1007"
+            const params = new URLSearchParams(window.location.search);
+            const encryptedData = params.get("data"); // Obtiene el token de la URL
+            const storedToken = localStorage.getItem("authToken"); // Obtiene el token en localStorage
+            if (!encryptedData || !storedToken) {
+                alert("Acceso no autorizado. Inicie sesión nuevamente.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            try {
+                // Desencriptamos la URL y localStorage
+                const decryptedURL = JSON.parse(CryptoJS.AES.decrypt(encryptedData, secretKey).toString(CryptoJS.enc.Utf8));
+                const decryptedLocal = JSON.parse(CryptoJS.AES.decrypt(storedToken, secretKey).toString(CryptoJS.enc.Utf8));
+                // Validamos que los tokens coincidan
+                if (decryptedURL.user !== decryptedLocal.user || decryptedURL.sessionID !== decryptedLocal.sessionID) {
+                    throw new Error("Sesión inválida");
+                }
+                asesorActual = decryptedURL.user;
+                //console.log("Usuario autenticado:", decryptedURL.user);
+
+            } catch (error) {
+                alert("Acceso no autorizado. Inicie sesión nuevamente.");
+                window.location.href = "login.html";
+            }
+
+
+
+            const ws = new WebSocket("ws://localhost:3000");
+            let chats = JSON.parse(localStorage.getItem("chats")) || {};
+            let usuarioActivo = null;
+            let usuariosBloqueados = new Map(); // Almacena los usuarios bloqueados
+            function bloquearUsuario(usuario) {
+                if (!usuariosBloqueados.has(usuario)) {
+                    usuariosBloqueados.set(usuario, asesorActual);
+                    actualizarListaUsuarios();
+                }
+            }
+
+            function desbloquearUsuario(usuario) {
+                if (usuariosBloqueados.has(usuario)) {
+                    usuariosBloqueados.delete(usuario);
+                    actualizarListaUsuarios();
+                }
+            }
+
+            function actualizarListaUsuarios() {
+                const userList = document.getElementById("user-list");
+                userList.childNodes.forEach(userItem => {
+                    let usuario = userItem.getAttribute("data-usuario");
+                    if (usuariosBloqueados.has(usuario)) {
+                        userItem.style.pointerEvents = "none"; // Bloquear clics
+                        userItem.style.opacity = "0.5"; // Reducir visibilidad
+                    } else {
+                        userItem.style.pointerEvents = "auto"; // Habilitar clics
+                        userItem.style.opacity = "1"; // Restaurar visibilidad
+                    }
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                mostrarUsuarios(chats);
+
+                // Detectar "Enter" en el input de mensaje
+                document.getElementById("message-input").addEventListener("keypress", function (event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault(); // Evitar salto de línea en el input
+                        enviarMensaje();
+                    }
+                });
+            });
+
+
+            function borrarMemoriaChats() {
+                localStorage.removeItem("chats");
+                chats = {};
+                mostrarUsuarios({});
+                document.getElementById("chat-messages").innerHTML = "";
+                document.getElementById("chat-title").innerText = "Selecciona un usuario para ver el chat";
+            }
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.tipo === "actualizar") {
+                    mostrarUsuarios(data.chats);
+                    if (usuarioActivo && data.chats[usuarioActivo]) {
+                        abrirChat(usuarioActivo, data.chats[usuarioActivo]);
+                    }
+                }
+            };
+
+            function enviarMensaje() {
+                let input = document.getElementById("message-input");
+                let mensajeTexto = input.value.trim();
+
+                if (mensajeTexto !== "" && usuarioActivo) {
+                    let nuevoMensaje = {
+                        mensaje: mensajeTexto,
+                        fecha: new Date().toLocaleDateString(),
+                        hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        asesor: true,
+                        enviadoDesdeWeb: true
+                    };
+
+                    ws.send(JSON.stringify({
+                        tipo: "mensajeWeb",
+                        usuarioWeb: usuarioActivo,
+                        mensajeWeb: mensajeTexto
+                    }));
+
+                    agregarMensajeAlChat(nuevoMensaje, usuarioActivo);
+                    input.value = "";
+
+                    // 🔥 Forzar actualización de la lista de usuarios
+                    mostrarUsuarios(chats);
+                }
+            }
+
+
+            function agregarMensajeAlChat(mensaje, usuario) {
+                const chatMessages = document.getElementById("chat-messages");
+                let msgDiv = document.createElement("div");
+                msgDiv.classList.add("message");
+
+                if (mensaje.asesor && mensaje.enviadoDesdeWeb) {
+                    msgDiv.classList.add("asesor-web");
+                } else if (mensaje.asesor) {
+                    msgDiv.classList.add("asesor");
+                } else {
+                    msgDiv.classList.add("cliente");
+                }
+
+                msgDiv.innerHTML = `
+        ${mensaje.mensaje}
+        <span class="timestamp">${mensaje.hora}</span>
+    `;
+
+                chatMessages.appendChild(msgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Animación de aparición
+                msgDiv.style.opacity = "0";
+                setTimeout(() => {
+                    msgDiv.style.opacity = "1";
+                    msgDiv.style.transition = "opacity 0.3s ease-in-out";
+                }, 100);
+
+                // 🔥 Almacenar el mensaje en memoria
+                if (!chats[usuarioActivo]) {
+                    chats[usuarioActivo] = [];
+                }
+                chats[usuarioActivo].push(mensaje);
+                localStorage.setItem("chats", JSON.stringify(chats));
+                document.getElementById("message-input").value = "";
+            }
+
+
+            let segundosActuales = new Date().getSeconds(); // Inicializa con el segundo actual
+
+            // 🔥 Actualiza los segundos cada segundo para mantenerlos dinámicos
+            setInterval(() => {
+                segundosActuales = new Date().getSeconds();
+            }, 1000);
+
+            function parsearFechaHora(fecha, hora) {
+                let [dia, mes, anio] = fecha.split("/").map(n => n.padStart(2, "0"));
+
+                let partesHora = hora.match(/(\d+):(\d+)\s?(a\.?m\.?|p\.?m\.?)?/i);
+                if (!partesHora) {
+                    console.error("❌ Error: Formato de hora incorrecto", hora);
+                    return null;
+                }
+
+                let horas = parseInt(partesHora[1], 10);
+                let minutos = partesHora[2].padStart(2, "0");
+                let periodo = partesHora[3] ? partesHora[3].toLowerCase() : null;
+
+                if (periodo) {
+                    if (periodo.includes("p") && horas !== 12) horas += 12; // PM y no es 12
+                    if (periodo.includes("a") && horas === 12) horas = 0;   // AM y es 12
+                }
+
+                // 🔥 Usa la variable de segundos actualizados dinámicamente
+                setInterval(() => {
+                    let segundos = segundosActuales.toString().padStart(2, "0");
+                    console.log(segundos);
+                    return new Date(`${anio}-${mes}-${dia}T${horas.toString().padStart(2, "0")}:${minutos}:${segundos}`).getTime();
+                }, 1000);
+
+            }
+
+            function mostrarUsuarios(chats) {
+                const userList = document.getElementById("user-list");
+                userList.innerHTML = "";
+
+                let usuariosOrdenados = Object.entries(chats).sort((a, b) => {
+                    const mensajeA = a[1][a[1].length - 1];
+                    const mensajeB = b[1][b[1].length - 1];
+
+                    if (!mensajeA || !mensajeA.fecha || !mensajeA.hora) return 1;
+                    if (!mensajeB || !mensajeB.fecha || !mensajeB.hora) return -1;
+
+                    const fechaHoraA = parsearFechaHora(mensajeA.fecha, mensajeA.hora, new Date().toLocaleTimeString([], { second: '2-digit' }));
+                    const fechaHoraB = parsearFechaHora(mensajeB.fecha, mensajeB.hora, new Date().toLocaleTimeString([], { second: '2-digit' }));
+
+                    if (!fechaHoraA) return 1; // Evita errores si la fecha no se pudo parsear
+                    if (!fechaHoraB) return -1;
+
+                    return fechaHoraB - fechaHoraA;
+                });
+
+                usuariosOrdenados.forEach(([usuario, mensajes]) => {
+                    let userItem = document.createElement("div");
+                    userItem.classList.add("user");
+
+                    let ultimoMensaje = mensajes[mensajes.length - 1];
+
+                    let lastMessageTime = ultimoMensaje ? ultimoMensaje.hora : "Sin mensajes";
+                    let lastMessageDate = ultimoMensaje ? ultimoMensaje.fecha : "";
+
+                    userItem.innerHTML = `
+            <div style="display: flex; align-items: center;">
+                <div class="user-icon">${usuario[0].toUpperCase()}</div> ${usuario}
+            </div>
+            <small>${lastMessageDate} - ${lastMessageTime}</small>
+        `;
+                    userItem.onclick = () => {
+                        abrirChat(usuario, mensajes); // Abre el chat normal
+                    };
+                    userList.appendChild(userItem);
+                });
+            }
+
+            function abrirChat(usuario, mensajesBot) {
+                if (usuariosBloqueados.has(usuario) && usuariosBloqueados.get(usuario) !== asesorActual) {
+                    alert("Este usuario ya está siendo atendido por otro asesor.");
+                    return; // Evita abrir el chat si otro asesor ya lo bloqueó
+                }
+                usuarioActivo = usuario;
+                bloquearUsuario(usuarioActivo); // Bloquea al usuario solo para otros asesores
+
+                document.getElementById("chat-title").innerText = `Chat con ${usuario}`;
+                document.getElementById("chat-title").style.display = "block";
+                document.getElementById("input-container").style.display = "flex";
+                const chatMessages = document.getElementById("chat-messages");
+                chatMessages.innerHTML = "";
+                chatMessages.style.display = "flex";
+                chatMessages.style.flexDirection = "column";
+
+                let mensajesWeb = chats[usuario] || [];
+                let todosLosMensajes = [...mensajesBot, ...mensajesWeb];
+
+                todosLosMensajes.sort((a, b) => parsearFechaHora(a.fecha, a.hora) - parsearFechaHora(b.fecha, b.hora));
+
+                let ultimaFecha = "";
+                todosLosMensajes.forEach(m => {
+                    let fechaMensaje = m.fecha;
+                    if (fechaMensaje !== ultimaFecha) {
+                        let dateSeparator = document.createElement("div");
+                        dateSeparator.classList.add("date-separator");
+                        dateSeparator.innerText = fechaMensaje;
+                        chatMessages.appendChild(dateSeparator);
+                        ultimaFecha = fechaMensaje;
+                    }
+
+                    let msgDiv = document.createElement("div");
+                    msgDiv.classList.add("message");
+
+                    if (m.asesor && m.enviadoDesdeWeb) {
+                        msgDiv.classList.add("asesor-web");
+                        msgDiv.style.alignSelf = "flex-end";
+                    } else if (m.asesor) {
+                        msgDiv.classList.add("asesor");
+                        msgDiv.style.alignSelf = "flex-start";
+                    } else {
+                        msgDiv.classList.add("cliente");
+                        msgDiv.style.alignSelf = "flex-start";
+                    }
+
+                    msgDiv.innerHTML = `${m.mensaje}<span class="timestamp">${m.hora}</span>`;
+                    chatMessages.appendChild(msgDiv);
+
+                    // 🔥 Desbloquea automáticamente si el usuario finaliza la conversación
+                    if (m.mensaje.includes("Sesión terminada por inactividad del usuario") || m.mensaje.includes("Conversación terminada por el cliente")) {
+                        desbloquearUsuario(usuario);
+                    }
+                });
+
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+
+            function parsearFechaHora(fecha, hora) {
+                let [dia, mes, anio] = fecha.split("/").map(n => n.padStart(2, "0"));
+
+                // 🔥 Convertir "12:00 p. m." a formato de 24 horas
+                let partesHora = hora.match(/(\d+):(\d+)\s?(a\.?m\.?|p\.?m\.?)?/i);
+
+                if (!partesHora) {
+                    console.error("❌ Error: Formato de hora incorrecto", hora);
+                    return null;
+                }
+
+                let horas = parseInt(partesHora[1], 10);
+                let minutos = partesHora[2].padStart(2, "0");
+                let periodo = partesHora[3] ? partesHora[3].toLowerCase() : null;
+
+                if (periodo) {
+                    if (periodo.includes("p") && horas !== 12) horas += 12; // PM y no es 12
+                    if (periodo.includes("a") && horas === 12) horas = 0;   // AM y es 12
+                }
+
+                // 🔥 Usar segundos actuales del sistema
+                let segundos = new Date().getSeconds().toString().padStart(2, "0");
+                //console.log(segundos);
+                return new Date(`${anio}-${mes}-${dia}T${horas.toString().padStart(2, "0")}:${minutos}:${segundos}`).getTime();
+            }
+
+            function corregirFormatoHora(hora) {
+                let [horas, minutos] = hora.split(":");
+                return `${horas}:${minutos}`;
+            }
+
+        });
+    </script>
+
+</body>
+
+</html>

@@ -83,4 +83,4 @@ wss.on('connection', (ws) => {
 
 app.use(express.static('public')); // Sirve la página HTML
 
-server.listen(3000, () => console.log('🚀 Servidor WebSocket en http://localhost:3000'));
+server.listen(3000, () => console.log('🚀 Servidor WebSocket en http://localhost:3000/login.html'));
