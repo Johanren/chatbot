@@ -284,16 +284,29 @@ const flowConsultaServicio = addKeyword(EVENTS.ACTION)
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
         const seleccion = ctx.body.trim();
-        const respuestas = {
+        /*const respuestas = {
             "1": "📡 Tu conexión está funcionando correctamente.",
             "2": "🔧 Puedes contactar a soporte técnico al 123-456-7890.",
             "3": "📅 No hay mantenimientos programados en este momento.",
-        };
+        };*/
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
-        await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
-        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera
-        await flowDynamic(respuestas[seleccion] || "⚠️ Opción no válida. Intente nuevamente." + gotoFlow(flowConsultaServicio));
-        return;
+
+        // Respuestas según opción seleccionada
+        if (seleccion === "1") {
+            return gotoFlow(flowChatAsesor);
+        }
+
+        if (seleccion === "2") {
+            return gotoFlow(flowChatAsesor);
+        }
+        if (seleccion === "3") {
+            return gotoFlow(flowChatAsesor);
+        }
+        //await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+        //await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera
+        // Opción no válida
+        await flowDynamic("⚠️ Opción no válida. Intente nuevamente.");
+        return gotoFlow(flowConsultaServicio);
     });
 
 const flowFacturacionPagos = addKeyword(EVENTS.ACTION)
@@ -305,16 +318,30 @@ const flowFacturacionPagos = addKeyword(EVENTS.ACTION)
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
         const seleccion = ctx.body.trim();
-        const respuestas = {
+        /*const respuestas = {
             "1": "💰 Tu saldo es de $50,000 COP.",
             "2": "💳 Puedes realizar un pago en nuestra plataforma.",
             "3": "📜 Aquí está tu historial de pagos.",
-        };
+        };*/
+        // Respuestas según opción seleccionada
+
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
-        await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
-        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera
-        await flowDynamic(respuestas[seleccion] || "⚠️ Opción no válida. Intente nuevamente." + gotoFlow(flowFacturacionPagos));
-        return;
+
+        if (seleccion === "1") {
+            return gotoFlow(flowChatAsesor);
+        }
+
+        if (seleccion === "2") {
+            return gotoFlow(flowChatAsesor);
+        }
+        if (seleccion === "3") {
+            return gotoFlow(flowChatAsesor);
+        }
+        /*await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera*/
+        // Opción no válida
+        await flowDynamic("⚠️ Opción no válida. Intente nuevamente.");
+        return gotoFlow(flowFacturacionPagos);
     });
 
 const flowPlanesPromociones = addKeyword(EVENTS.ACTION)
@@ -326,16 +353,35 @@ const flowPlanesPromociones = addKeyword(EVENTS.ACTION)
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
         const seleccion = ctx.body.trim();
-        const respuestas = {
+        /*const respuestas = {
             "1": "📄 Planes de hasta 1 Gbps disponibles.",
             "2": "🔥 10% de descuento en nuevos suscriptores.",
             "3": "🔄 Contacta a un asesor para cambiar de plan."
-        };
+        };*/
+        // Respuestas según opción seleccionada
+
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
-        await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
-        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera
-        await flowDynamic(respuestas[seleccion] || "⚠️ Opción no válida. Intente nuevamente." + gotoFlow(flowPlanesPromociones));
-        return;
+
+
+        if (seleccion === "1") {
+            await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+            await new Promise(resolve => setTimeout(resolve, 5000)); // 5 segundos de espera
+        }
+
+        if (seleccion === "2") {
+            await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+            await new Promise(resolve => setTimeout(resolve, 5000)); // 5 segundos de espera
+        }
+        if (seleccion === "3") {
+            await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+            await new Promise(resolve => setTimeout(resolve, 5000)); // 5 segundos de espera
+            await flowDynamic("Haz Tu Cambio de plan aquí 👉 https://forms.gle/VFrnbvWzZYydiD4q6")
+        }
+        // Opción no válida
+        if (!["9", "1", "2", "3"].includes(seleccion)) {
+            await flowDynamic("⚠️ Opción no válida. Intente nuevamente.");
+            return gotoFlow(flowComentarioSugerencia);
+        }
     });
 
 const flowSoporteTecnico = addKeyword(EVENTS.ACTION)
@@ -347,16 +393,28 @@ const flowSoporteTecnico = addKeyword(EVENTS.ACTION)
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
         const seleccion = ctx.body.trim();
-        const respuestas = {
+        /*const respuestas = {
             "1": "🔍 Realiza un diagnóstico de red en nuestra app.",
             "2": "⚙️ Consulta nuestra guía de configuración avanzada.",
             "3": "📞 Llama al 123-456-7890 para soporte técnico."
-        };
+        };*/
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
-        await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
-        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera
-        await flowDynamic(respuestas[seleccion] || "⚠️ Opción no válida. Intente nuevamente." + gotoFlow(flowSoporteTecnico));
-        return;
+
+        if (seleccion === "1") {
+            return gotoFlow(flowChatAsesor);
+        }
+
+        if (seleccion === "2") {
+            return gotoFlow(flowChatAsesor);
+        }
+        if (seleccion === "3") {
+            return gotoFlow(flowChatAsesor);
+        }
+        /*await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera*/
+        // Opción no válida
+        await flowDynamic("⚠️ Opción no válida. Intente nuevamente.");
+        return gotoFlow(flowSoporteTecnico);
     });
 
 const flowConsultaPersonalizada = addKeyword(EVENTS.ACTION)
@@ -367,15 +425,27 @@ const flowConsultaPersonalizada = addKeyword(EVENTS.ACTION)
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
         const seleccion = ctx.body.trim();
-        const respuestas = {
+        /*const respuestas = {
             "1": " Describe tu problema o consulta y recibirás una respuesta personalizada",
             "2": " Si has interactuado antes, puedo ofrecerte soluciones basadas en tus consultas pasadas."
-        };
+        };*/
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
-        await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
-        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera
-        await flowDynamic(respuestas[seleccion] || "⚠️ Opción no válida. Intente nuevamente." + gotoFlow(flowSoporteTecnico));
-        return;
+
+        if (seleccion === "1") {
+            return gotoFlow(flowChatAsesor);
+        }
+
+        if (seleccion === "2") {
+            return gotoFlow(flowChatAsesor);
+        }
+        if (seleccion === "3") {
+            return gotoFlow(flowChatAsesor);
+        }
+        /*await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera*/
+        // Opción no válida
+        await flowDynamic("⚠️ Opción no válida. Intente nuevamente.");
+        return gotoFlow(flowConsultaPersonalizada);
     });
 
 const flowAsistenciaTiendoReal = addKeyword(EVENTS.ACTION)
@@ -402,7 +472,7 @@ const flowAsistenciaTiendoReal = addKeyword(EVENTS.ACTION)
 
         // Opción no válida
         await flowDynamic("⚠️ Opción no válida. Intente nuevamente.");
-        return gotoFlow(flowSoporteTecnico);
+        return gotoFlow(flowAsistenciaTiendoReal);
     });
 
 
@@ -414,15 +484,30 @@ const flowComentarioSugerencia = addKeyword(EVENTS.ACTION)
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
         const seleccion = ctx.body.trim();
-        const respuestas = {
+        /*const respuestas = {
             "1": " Comparte tu experiencia y sugerencias para mejorar.",
             "2": " Ayúdanos a mejorar nuestros servicios respondiendo a breves encuestas"
-        };
+        };*/
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
-        await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
-        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera
-        await flowDynamic(respuestas[seleccion] || "⚠️ Opción no válida. Intente nuevamente." + gotoFlow(flowSoporteTecnico));
-        return;
+
+        if (seleccion === "1") {
+            await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+            await new Promise(resolve => setTimeout(resolve, 5000)); // 5 segundos de espera
+            await flowDynamic("Dejanos tu opinion atraves de 👉 https://forms.gle/w3aTL3GhUXxGuh8MA")
+        }
+
+        if (seleccion === "2") {
+            await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+            await new Promise(resolve => setTimeout(resolve, 5000)); // 5 segundos de espera
+            await flowDynamic("Participar en encuestas")
+            await flowDynamic("https://forms.gle/VFrnbvWzZYydiD4q6")
+        }
+        /*await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera*/
+        if (!["9", "1", "2", "3"].includes(seleccion)) {
+            await flowDynamic("⚠️ Opción no válida. Intente nuevamente.");
+            return gotoFlow(flowComentarioSugerencia);
+        }
     });
 
 const flowInformacionGeneral = addKeyword(EVENTS.ACTION)
@@ -433,15 +518,28 @@ const flowInformacionGeneral = addKeyword(EVENTS.ACTION)
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
         const seleccion = ctx.body.trim();
-        const respuestas = {
+        /*const respuestas = {
             "1": " Encuentra respuestas a las preguntas más comunes.",
             "2": " Consulta nuestras políticas y términos."
-        };
+        };*/
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
-        await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
-        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera
-        await flowDynamic(respuestas[seleccion] || "⚠️ Opción no válida. Intente nuevamente." + gotoFlow(flowSoporteTecnico));
-        return;
+
+        if (seleccion === "1") {
+            await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+            await new Promise(resolve => setTimeout(resolve, 5000)); // 5 segundos de espera
+            flowDynamic("Dejanos tu opinion atraves de 👉 https://forms.gle/w3aTL3GhUXxGuh8MA")
+        }
+
+        if (seleccion === "2") {
+            await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+            await new Promise(resolve => setTimeout(resolve, 5000)); // 5 segundos de espera
+            flowDynamic("Nuestras Politicas de uso y privacidad")
+            flowDynamic("En FiberNet")
+        }
+        /*await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+        await new Promise(resolve => setTimeout(resolve, 20000)); // 20 segundos de espera*/
+        await flowDynamic("⚠️ Opción no válida. Intente nuevamente.");
+        return gotoFlow(flowInformacionGeneral);
     });
 
 /*Hablar con un accesor*/
