@@ -1,0 +1,565 @@
+{
+    "573122146368": [
+        {
+            "mensaje": "g",
+            "fecha": "9\/4\/2025",
+            "hora": "09:15 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "f",
+            "fecha": "9\/4\/2025",
+            "hora": "09:16 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "\u00f1",
+            "fecha": "9\/4\/2025",
+            "hora": "09:17 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "a",
+            "fecha": "9\/4\/2025",
+            "hora": "09:18 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "d",
+            "fecha": "9\/4\/2025",
+            "hora": "09:19 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "b",
+            "fecha": "9\/4\/2025",
+            "hora": "09:22 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "d",
+            "fecha": "9\/4\/2025",
+            "hora": "09:22 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "f",
+            "fecha": "9\/4\/2025",
+            "hora": "09:22 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "j",
+            "fecha": "9\/4\/2025",
+            "hora": "09:22 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "k",
+            "fecha": "9\/4\/2025",
+            "hora": "09:22 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "g",
+            "fecha": "9\/4\/2025",
+            "hora": "09:24 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "v",
+            "fecha": "9\/4\/2025",
+            "hora": "09:26 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "l",
+            "fecha": "9\/4\/2025",
+            "hora": "09:41 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "g",
+            "fecha": "9\/4\/2025",
+            "hora": "09:46 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "c",
+            "fecha": "9\/4\/2025",
+            "hora": "09:48 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "hola",
+            "fecha": "9\/4\/2025",
+            "hora": "09:59 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "h",
+            "fecha": "9\/4\/2025",
+            "hora": "10:00 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "d",
+            "fecha": "9\/4\/2025",
+            "hora": "10:05 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "fds",
+            "fecha": "9\/4\/2025",
+            "hora": "10:05 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "dfsd",
+            "fecha": "9\/4\/2025",
+            "hora": "10:08 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "fsd",
+            "fecha": "9\/4\/2025",
+            "hora": "10:08 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "1",
+            "fecha": "9\/4\/2025",
+            "hora": "06:17 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Inactividad por el usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "06:22 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Sesi\u00f3n terminada por inactividad del usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "06:27 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Conversacion terminada por el cliente",
+            "fecha": "9\/4\/2025",
+            "hora": "07:53 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "2",
+            "fecha": "9\/4\/2025",
+            "hora": "07:53 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "H",
+            "fecha": "9\/4\/2025",
+            "hora": "07:57 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Inactividad por el usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "07:58 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Sesi\u00f3n terminada por inactividad del usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "08:03 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Hola",
+            "fecha": "9\/4\/2025",
+            "hora": "08:35 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Conversacion terminada por el cliente",
+            "fecha": "9\/4\/2025",
+            "hora": "08:35 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "2",
+            "fecha": "9\/4\/2025",
+            "hora": "08:35 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Inactividad por el usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "08:40 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "D",
+            "fecha": "9\/4\/2025",
+            "hora": "08:43 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Sesi\u00f3n terminada por inactividad del usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "08:45 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "R",
+            "fecha": "9\/4\/2025",
+            "hora": "08:51 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "F",
+            "fecha": "9\/4\/2025",
+            "hora": "08:55 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "H",
+            "fecha": "9\/4\/2025",
+            "hora": "09:22 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "J",
+            "fecha": "9\/4\/2025",
+            "hora": "09:24 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "F",
+            "fecha": "9\/4\/2025",
+            "hora": "09:24 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "H",
+            "fecha": "9\/4\/2025",
+            "hora": "09:26 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "F",
+            "fecha": "9\/4\/2025",
+            "hora": "09:28 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Hola",
+            "fecha": "9\/4\/2025",
+            "hora": "09:46 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Gracias por",
+            "fecha": "9\/4\/2025",
+            "hora": "09:46 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "G",
+            "fecha": "9\/4\/2025",
+            "hora": "09:46 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Conversacion terminada por el cliente",
+            "fecha": "9\/4\/2025",
+            "hora": "09:46 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "1",
+            "fecha": "9\/4\/2025",
+            "hora": "09:46 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "E",
+            "fecha": "9\/4\/2025",
+            "hora": "09:46 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "X",
+            "fecha": "9\/4\/2025",
+            "hora": "09:47 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "C",
+            "fecha": "9\/4\/2025",
+            "hora": "09:48 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Z",
+            "fecha": "9\/4\/2025",
+            "hora": "09:48 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Inactividad por el usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "09:51 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Sesi\u00f3n terminada por inactividad del usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "09:56 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Conversacion terminada por el cliente",
+            "fecha": "9\/4\/2025",
+            "hora": "09:59 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "1",
+            "fecha": "9\/4\/2025",
+            "hora": "09:59 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "X",
+            "fecha": "9\/4\/2025",
+            "hora": "10:00 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "J",
+            "fecha": "9\/4\/2025",
+            "hora": "10:00 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "D",
+            "fecha": "9\/4\/2025",
+            "hora": "10:00 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "4",
+            "fecha": "9\/4\/2025",
+            "hora": "10:03 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Inactividad por el usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "10:04 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "R",
+            "fecha": "9\/4\/2025",
+            "hora": "10:05 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Y",
+            "fecha": "9\/4\/2025",
+            "hora": "10:05 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "B",
+            "fecha": "9\/4\/2025",
+            "hora": "10:05 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "H",
+            "fecha": "9\/4\/2025",
+            "hora": "10:08 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Y",
+            "fecha": "9\/4\/2025",
+            "hora": "10:08 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Sesi\u00f3n terminada por inactividad del usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "10:09 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Conversacion terminada por el cliente",
+            "fecha": "9\/4\/2025",
+            "hora": "11:16 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "1",
+            "fecha": "9\/4\/2025",
+            "hora": "11:17 a.\u00a0m."
+        },
+        {
+            "mensaje": "hola",
+            "fecha": "9\/4\/2025",
+            "hora": "11:17 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "6",
+            "fecha": "9\/4\/2025",
+            "hora": "11:18 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Inactividad por el usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "11:22 a.\u00a0m."
+        },
+        {
+            "mensaje": "Wenas",
+            "fecha": "9\/4\/2025",
+            "hora": "11:28 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "Como tas",
+            "fecha": "9\/4\/2025",
+            "hora": "11:28 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "hola",
+            "fecha": "9\/4\/2025",
+            "hora": "11:28 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "yuju",
+            "fecha": "9\/4\/2025",
+            "hora": "11:28 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "n",
+            "fecha": "9\/4\/2025",
+            "hora": "11:29 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "2",
+            "fecha": "9\/4\/2025",
+            "hora": "11:29 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "H",
+            "fecha": "9\/4\/2025",
+            "hora": "11:29 a.\u00a0m."
+        },
+        {
+            "mensaje": "g",
+            "fecha": "9\/4\/2025",
+            "hora": "11:29 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Conversacion terminada por el cliente",
+            "fecha": "9\/4\/2025",
+            "hora": "11:30 a.\u00a0m."
+        },
+        {
+            "mensaje": "h",
+            "fecha": "9\/4\/2025",
+            "hora": "11:30 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "n",
+            "fecha": "9\/4\/2025",
+            "hora": "11:30 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "Hola como estas",
+            "fecha": "9\/4\/2025",
+            "hora": "11:30 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "1",
+            "fecha": "9\/4\/2025",
+            "hora": "11:43 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Inactividad por el usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "11:48 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Sesi\u00f3n terminada por inactividad del usuario",
+            "fecha": "9\/4\/2025",
+            "hora": "11:53 a.\u00a0m."
+        },
+        {
+            "mensaje": "Hola",
+            "fecha": "9\/4\/2025",
+            "hora": "11:55 a.m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "h",
+            "fecha": "9\/4\/2025",
+            "hora": "11:55 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        }
+    ]
+}

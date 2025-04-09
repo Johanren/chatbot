@@ -120,6 +120,8 @@ const reiniciarTemporizador = (user) => {
         if (sesion.esperandoAsesor) {
             console.log("Sesión terminada por inactividad del usuario.");
             enviarMensajeWeb(user, "Asesor 1", "Sesión terminada por inactividad del usuario");
+            limpiarEstadoUsuario(user);
+            sesiones.delete(user); // Eliminar la sesión del mapa
             return;
         }
 
@@ -171,7 +173,8 @@ async function enviarMensajeWhatsApp(usuario, mensaje) {
     }
 
     try {
-        console.log(`🚀 Enviando a WhatsApp -> Usuario: ${usuario}, Mensaje: "${mensaje}"`);
+        console.
+        log(`🚀 Enviando a WhatsApp -> Usuario: ${usuario}, Mensaje: "${mensaje}"`);
         await sock.sendMessage(`${usuario}@s.whatsapp.net`, { text: mensaje });
         console.log("✅ Mensaje enviado correctamente.");
     } catch (error) {
