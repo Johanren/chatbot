@@ -14,7 +14,6 @@ let chatsWeb = {};
 // server.js
 
 // server.js
-
 wss.on('connection', (ws) => {
     console.log("✅ Nuevo cliente conectado");
 
@@ -42,7 +41,7 @@ wss.on('connection', (ws) => {
                 // Enviar el mensaje actualizado a todos los clientes conectados
                 wss.clients.forEach(client => {
                     if (client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify({ tipo: 'actualizar', chats }));
+                        client.send(JSON.stringify({ tipo: 'actualizar', chats, asesor: data.asesor }));
                     }
                 });
             }
@@ -55,6 +54,7 @@ wss.on('connection', (ws) => {
 
                 // Almacenamos el mensaje con fecha y hora
                 chatsWeb[data.usuarioWeb].push({
+                    asesor: data.asesorWeb,
                     usuario: data.usuarioWeb,
                     mensaje: data.mensajeWeb,
                     fecha: fecha,  // Fecha en formato dd/mm/yyyy

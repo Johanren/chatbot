@@ -10,15 +10,19 @@
     },
     "keywords": [],
     "dependencies": {
-        "@bot-whatsapp/bot": "latest",
+        "@bot-whatsapp/bot": "^0.1.38",
         "@bot-whatsapp/cli": "latest",
         "@bot-whatsapp/database": "latest",
         "@bot-whatsapp/portal": "latest",
         "@bot-whatsapp/provider": "latest",
         "@bot-whatsapp/provider-baileys": "^0.1.0-alpha.18",
+        "@bot-whatsapp/provider-wppconnect": "^0.1.1-alpha.0",
         "@whiskeysockets/baileys": "^6.17.16",
         "express": "^5.1.0",
+        "qrcode": "^1.5.4",
         "qrcode-terminal": "^0.12.0",
+        "sharp": "^0.32.6",
+        "socket.io": "^4.8.1",
         "whatsapp-web.js": "^1.27.0"
     },
     "devDependencies": {

@@ -1,4 +1,8 @@
-const { createBot, createProvider, createFlow, addKeyword, EVENTS, media, addAnswer } = require('@bot-whatsapp/bot');
+const fs = require('fs');
+const path = require('path');
+const express = require('express');
+const { createBot, createProvider, createFlow, addKeyword, EVENTS, media, addAnswer, MemoryDB } = require('@bot-whatsapp/bot');
+const QRPortalWeb = require('@bot-whatsapp/portal')
 const WebWhatsappProvider = require('@bot-whatsapp/provider/web-whatsapp');
 const MockAdapter = require('@bot-whatsapp/database/mock');
 
@@ -6,16 +10,28 @@ const TIMEOUT_INACTIVIDAD = 10 * 60 * 1000; // 10 minutos
 const sesiones = new Map();
 const temporizadores = new Map();
 
-const { useMultiFileAuthState, makeWASocket } = require('@whiskeysockets/baileys');
+const { useMultiFileAuthState, makeWASocket, DisconnectReason, delay } = require('@whiskeysockets/baileys');
 const qrcode = require('qrcode-terminal');
-let sock; // Declarar sock de forma global
+const qrcode1 = require('qrcode');
 
-async function connectToWhatsApp() {
-    const { state, saveCreds } = await useMultiFileAuthState('./auth_info_baileys');
-    sock = makeWASocket({
+const sessions = ['asesor1']; // Agrega más sesiones si deseas
+const socks = {}; // Mapa global de sesiones: { cliente1: sock1, cliente2: sock2 }
+
+async function startAllSessions() {
+    for (const name of sessions) {
+        await startWhatsAppSession(name);
+    }
+}
+
+async function startWhatsAppSession(sessionName) {
+    const { state, saveCreds } = await useMultiFileAuthState(`./auth/${sessionName}`);
+
+    const sock = makeWASocket({
         auth: state,
         printQRInTerminal: true,
     });
+
+    socks[sessionName] = sock; // Guardar socket por sesión
 
     sock.ev.on('creds.update', saveCreds);
 
@@ -23,33 +39,49 @@ async function connectToWhatsApp() {
         const { connection, lastDisconnect, qr } = update;
 
         if (qr) {
-            console.log("📲 Escanea este código QR para conectar tu bot:");
+            console.log(`📲 [${sessionName}] Escanea este código QR para conectar tu bot:`);
             qrcode.generate(qr, { small: true });
         }
 
         if (connection === 'close') {
             const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
-            console.log("❌ Conexión cerrada", shouldReconnect ? "→ Intentando reconectar..." : "→ Sesión cerrada permanentemente.");
+            console.log(`❌ [${sessionName}] Conexión cerrada`, shouldReconnect ? "→ Intentando reconectar..." : "→ Sesión cerrada permanentemente.");
 
             if (shouldReconnect) {
-                connectToWhatsApp(); // Reconectar automáticamente
+                startWhatsAppSession(sessionName);
             } else {
-                console.log("⚠ Debes volver a escanear el código QR.");
+                console.log(`⚠ [${sessionName}] Debes volver a escanear el código QR.`);
             }
         } else if (connection === 'open') {
-            console.log("✅ Conectado a WhatsApp");
+            console.log(`✅ [${sessionName}] Conectado a WhatsApp`);
         }
     });
-
-    return sock;
 }
 
-connectToWhatsApp();
+async function enviarMensajeWhatsApp(sessionName, usuario, mensaje) {
+    const sock = socks[sessionName];
+    if (!sock) {
+        console.error(`⚠️ Error: la sesión "${sessionName}" no está inicializada.`);
+        return;
+    }
+
+    try {
+        console.log(`🚀 Enviando desde [${sessionName}] → Usuario: ${usuario}, Mensaje: "${mensaje}"`);
+        await sock.sendMessage(`${usuario}@s.whatsapp.net`, { text: mensaje });
+        console.log("✅ Mensaje enviado correctamente.");
+    } catch (error) {
+        console.error("❌ Error al enviar mensaje:", error);
+    }
+}
+
+// Iniciar todas las sesiones
+startAllSessions();
 
 /*Conexion con pagina web*/
 
 const WebSocket = require('ws');
 const ws = new WebSocket('ws://localhost:3000');
+//const ws = new WebSocket('wss://3b59-2803-e5e3-2810-7900-1862-447a-ad19-e93.ngrok-free.app');
 ws.on('open', () => {
     console.log("📡 Conectado al servidor Web");
 });
@@ -119,7 +151,7 @@ const reiniciarTemporizador = (user) => {
         // Si el usuario está esperando un asesor, notificar al sistema web
         if (sesion.esperandoAsesor) {
             console.log("Sesión terminada por inactividad del usuario.");
-            enviarMensajeWeb(user, "Asesor 1", "Sesión terminada por inactividad del usuario");
+            enviarMensajeWeb(user, "asesor1", "Sesión terminada por inactividad del usuario");
             limpiarEstadoUsuario(user);
             sesiones.delete(user); // Eliminar la sesión del mapa
             return;
@@ -144,19 +176,18 @@ ws.onmessage = (event) => {
                 console.error("❌ Error: data.chatsWeb no es un objeto válido", data.chatsWeb);
                 return;
             }
-
             // Recorrer los usuarios y obtener solo el último mensaje
             Object.entries(data.chatsWeb).forEach(([usuario, mensajes]) => {
                 if (!Array.isArray(mensajes) || mensajes.length === 0) {
                     console.error(`❌ Error: No hay mensajes válidos para el usuario ${usuario}`, mensajes);
                     return;
                 }
-
                 // Obtener el último mensaje del array
                 const ultimoMensaje = mensajes[mensajes.length - 1];
+                const asesor = ultimoMensaje.asesor || "asesor_desconocido"; // fallback si no viene asesor
 
-                console.log(`✉️ Enviando último mensaje a ${usuario}:`, ultimoMensaje.mensaje);
-                enviarMensajeWhatsApp(usuario, ultimoMensaje.mensaje);
+                console.log(`✉️ Enviando último mensaje a ${usuario}: "${ultimoMensaje.mensaje}" desde el Asesor: ${asesor}`);
+                enviarMensajeWhatsApp(asesor, usuario, ultimoMensaje.mensaje);
             });
         }
     } catch (error) {
@@ -164,23 +195,6 @@ ws.onmessage = (event) => {
     }
 };
 
-
-async function enviarMensajeWhatsApp(usuario, mensaje) {
-    if (!sock) {
-        console.error("⚠️ Error: `sock` no está inicializado. Intentando reconectar...");
-        await connectToWhatsApp();
-        return;
-    }
-
-    try {
-        console.
-        log(`🚀 Enviando a WhatsApp -> Usuario: ${usuario}, Mensaje: "${mensaje}"`);
-        await sock.sendMessage(`${usuario}@s.whatsapp.net`, { text: mensaje });
-        console.log("✅ Mensaje enviado correctamente.");
-    } catch (error) {
-        console.error("❌ Error al enviar mensaje:", error);
-    }
-}
 
 /*Flujo Principal*/
 
@@ -194,7 +208,7 @@ const flowPrincipalAsesor = addKeyword(EVENTS.WELCOME)
         if (estado?.esperandoAsesor) {
             console.log("🔒 Actualmente estás esperando a un asesor. No se ejecutará el flujo principal.");
             await console.log("📩 *Puedes seguir enviando mensajes. Un asesor te responderá pronto.*");
-            enviarMensajeWeb(usuarioID, "Asesor 1", mensaje);
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return;  // No hace nada, evitando el flujo
         }
 
@@ -205,6 +219,7 @@ const flowPrincipalAsesor = addKeyword(EVENTS.WELCOME)
 
 
 const flowPrincipal = addKeyword(EVENTS.WELCOME)
+    .addAnswer('¡Aquí tienes una imagen!', { media: 'c:/xampp/htdocs/chatbot/public/img/logo.png' })
     .addAnswer("👋 ¡Hola! Bienvenido al asistente virtual de *Jordel Ingeniería SAS, FiberNet*.", {}, async (ctx, { gotoFlow, flowDynamic }) => {
         return gotoFlow(flowMenuPrincipal);
     });
@@ -267,7 +282,7 @@ const flowCerrarConversacion = addKeyword(["0"])
             let mensaje = "Conversacion terminada por el cliente";
             console.log("Conversacion terminda");
             await console.log("📩 *Puedes seguir enviando mensajes. Un asesor te responderá pronto.*");
-            enviarMensajeWeb(usuarioID, "Asesor 1", mensaje);
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             limpiarEstadoUsuario(usuarioID);
             return gotoFlow(flowMenuPrincipal);  // No hace nada, evitando el flujo
         }
@@ -286,6 +301,7 @@ const flowConsultaServicio = addKeyword(EVENTS.ACTION)
         "3️⃣📅 Mantenimiento programado",
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
+        const usuarioID = ctx.from;
         const seleccion = ctx.body.trim();
         /*const respuestas = {
             "1": "📡 Tu conexión está funcionando correctamente.",
@@ -296,13 +312,25 @@ const flowConsultaServicio = addKeyword(EVENTS.ACTION)
 
         // Respuestas según opción seleccionada
         if (seleccion === "1") {
+            let mensaje = "Cliente busca ayuda en Estado de mi conexión";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
 
         if (seleccion === "2") {
+            let mensaje = "Cliente busca ayuda en Problemas técnicos";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
         if (seleccion === "3") {
+            let mensaje = "Cliente busca ayuda en Mantenimiento programado";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
         //await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
@@ -320,6 +348,7 @@ const flowFacturacionPagos = addKeyword(EVENTS.ACTION)
         "3️⃣📜 Historial de facturación",
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
+        const usuarioID = ctx.from;
         const seleccion = ctx.body.trim();
         /*const respuestas = {
             "1": "💰 Tu saldo es de $50,000 COP.",
@@ -331,13 +360,25 @@ const flowFacturacionPagos = addKeyword(EVENTS.ACTION)
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
 
         if (seleccion === "1") {
+            let mensaje = "Cliente busca ayuda en Consultar saldo";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
 
         if (seleccion === "2") {
+            let mensaje = "Cliente busca ayuda en Realizar un pago";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
         if (seleccion === "3") {
+            let mensaje = "Cliente busca ayuda en Historial de facturación";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
         /*await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
@@ -355,6 +396,7 @@ const flowPlanesPromociones = addKeyword(EVENTS.ACTION)
         "3️⃣🔄 Cambio de plan",
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
+        const usuarioID = ctx.from;
         const seleccion = ctx.body.trim();
         /*const respuestas = {
             "1": "📄 Planes de hasta 1 Gbps disponibles.",
@@ -369,11 +411,28 @@ const flowPlanesPromociones = addKeyword(EVENTS.ACTION)
         if (seleccion === "1") {
             await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
             await new Promise(resolve => setTimeout(resolve, 5000)); // 5 segundos de espera
+            try {
+                await flowDynamic([{ body: ' ', media: 'c:/xampp/htdocs/chatbot/public/img/uno.jpg', delay: 1000 }]);
+                await flowDynamic([{ body: ' ', media: 'c:/xampp/htdocs/chatbot/public/img/dos.jpg', delay: 1000 }]);
+                await flowDynamic([{ body: ' ', media: 'c:/xampp/htdocs/chatbot/public/img/tres.jpg', delay: 1000 }]);
+                await flowDynamic([{ body: ' ', media: 'c:/xampp/htdocs/chatbot/public/img/cuatro.jpg', delay: 1000 }]);
+                await flowDynamic([{ body: ' ', media: 'c:/xampp/htdocs/chatbot/public/img/cinco.jpg', delay: 1000 }]);
+                await flowDynamic([{ body: ' ', media: 'c:/xampp/htdocs/chatbot/public/img/seis.jpg', delay: 1000 }]);
+                await flowDynamic([{ body: ' ', media: 'c:/xampp/htdocs/chatbot/public/img/siete.jpg', delay: 1000 }]);
+            } catch (error) {
+                console.error('Error en flowDynamic:', error);
+            }
+
         }
 
         if (seleccion === "2") {
-            await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
-            await new Promise(resolve => setTimeout(resolve, 5000)); // 5 segundos de espera
+            //await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
+            //await new Promise(resolve => setTimeout(resolve, 5000)); // 5 segundos de 
+            let mensaje = "Cliente busca ayuda en Promociones actuales";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
+            return gotoFlow(flowChatAsesor);
         }
         if (seleccion === "3") {
             await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
@@ -395,6 +454,7 @@ const flowSoporteTecnico = addKeyword(EVENTS.ACTION)
         "3️⃣📞 Contactar a un técnico",
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
+        const usuarioID = ctx.from;
         const seleccion = ctx.body.trim();
         /*const respuestas = {
             "1": "🔍 Realiza un diagnóstico de red en nuestra app.",
@@ -404,13 +464,25 @@ const flowSoporteTecnico = addKeyword(EVENTS.ACTION)
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
 
         if (seleccion === "1") {
+            let mensaje = "Cliente busca ayuda en Diagnóstico de red";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
 
         if (seleccion === "2") {
+            let mensaje = "Cliente busca ayuda en Configuración avanzada";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
         if (seleccion === "3") {
+            let mensaje = "Cliente busca ayuda en Contactar a un técnico";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
         /*await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
@@ -427,6 +499,7 @@ const flowConsultaPersonalizada = addKeyword(EVENTS.ACTION)
         "2️⃣ Sugerencias basadas en historial",
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
+        const usuarioID = ctx.from;
         const seleccion = ctx.body.trim();
         /*const respuestas = {
             "1": " Describe tu problema o consulta y recibirás una respuesta personalizada",
@@ -435,13 +508,18 @@ const flowConsultaPersonalizada = addKeyword(EVENTS.ACTION)
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
 
         if (seleccion === "1") {
+            let mensaje = "Cliente busca ayuda en Asistente inteligente";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
 
         if (seleccion === "2") {
-            return gotoFlow(flowChatAsesor);
-        }
-        if (seleccion === "3") {
+            let mensaje = "Cliente busca ayuda en Sugerencias basadas en historial";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
         /*await flowDynamic("⏳ Por favor, espera un momento mientras procesamos tu solicitud...");
@@ -458,18 +536,25 @@ const flowAsistenciaTiendoReal = addKeyword(EVENTS.ACTION)
         "2️⃣ Programar una llamada",
         "9️⃣ Volver al menú principal"
     ], { capture: true }, async (ctx, { flowDynamic, gotoFlow }) => {
+        const usuarioID = ctx.from;
         const seleccion = ctx.body.trim();
 
         if (seleccion === "9") return gotoFlow(flowVolverMenuPrincipal);
 
         // Respuestas según opción seleccionada
         if (seleccion === "1") {
-            await flowDynamic("🔄 Conéctate con un representante humano para asistencia directa.");
+            let mensaje = "Cliente busca ayuda en Hablar con un agente";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
 
         if (seleccion === "2") {
-            await flowDynamic("📞 Si prefieres que te contacten, déjanos tu información.");
+            let mensaje = "Cliente busca ayuda en Programar una llamada";
+
+            // Enviar mensaje al WebSocket
+            enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             return gotoFlow(flowChatAsesor);
         }
 
@@ -558,7 +643,7 @@ const flowChatAsesor = addKeyword(EVENTS.ACTION)
         let mensaje = ctx.body.trim();
 
         // Enviar mensaje al WebSocket
-        enviarMensajeWeb(usuarioID, "Asesor 1", mensaje);
+        enviarMensajeWeb(usuarioID, "asesor1", mensaje);
 
         if (mensaje === "0") {
             limpiarEstadoUsuario(usuarioID);
@@ -583,19 +668,50 @@ const flowChatAsesor = addKeyword(EVENTS.ACTION)
             if (estado?.esperandoAsesor) {
                 await flowDynamic("⏳ Parece que has estado inactivo. Si deseas cerrar la conversación, responde con *0️⃣*.");
                 mensaje = "Inactividad por el usuario";
-                enviarMensajeWeb(usuarioID, "Asesor 1", mensaje);
+                enviarMensajeWeb(usuarioID, "asesor1", mensaje);
             }
         }, 300000); // 5 minutos
     });
 
+// Almacenar temporalmente los QR por bot
+const qrStorage = {};
+
+const createInstance = async (nombreBot, sessionId, port) => {
+    const sessionFolder = path.join(__dirname, 'sessions', sessionId);
+    if (!fs.existsSync(sessionFolder)) {
+        fs.mkdirSync(sessionFolder, { recursive: true });
+    }
+
+    const adapterDB = new MockAdapter();
+    const adapterFlow = createFlow([
+        flowPrincipalAsesor, flowPrincipal, flowMenuPrincipal, flowConsultaServicio,
+        flowFacturacionPagos, flowPlanesPromociones, flowSoporteTecnico,
+        flowConsultaPersonalizada, flowAsistenciaTiendoReal, flowComentarioSugerencia,
+        flowInformacionGeneral, flowCerrarSesion, flowVolverMenuPrincipal,
+        flowChatAsesor, flowCerrarConversacion
+    ]);
+
+    const adapterProvider = createProvider(WebWhatsappProvider, {
+        sessionPath: sessionFolder,
+    });
+
+    const bot = await createBot({
+        flow: adapterFlow,
+        provider: adapterProvider,
+        database: adapterDB,
+    });
+
+    QRPortalWeb({ port });
+};
+
+const bots = [
+    { nombre: "Bot #1", sessionId: "bot1", port: 3001 }
+];
 
 const main = async () => {
-    const adapterDB = new MockAdapter();
-    const adapterFlow = createFlow([flowPrincipalAsesor, flowPrincipal, flowMenuPrincipal, flowConsultaServicio, flowFacturacionPagos, flowPlanesPromociones, flowSoporteTecnico, flowConsultaPersonalizada, flowAsistenciaTiendoReal, flowComentarioSugerencia, flowInformacionGeneral, flowCerrarSesion, flowVolverMenuPrincipal, flowChatAsesor, flowCerrarConversacion]);
-    const adapterProvider = createProvider(WebWhatsappProvider);
-    createBot({ flow: adapterFlow, provider: adapterProvider, database: adapterDB });
-
-    console.log("🤖 Bot en ejecución...");
+    await Promise.all(
+        bots.map(bot => createInstance(bot.nombre, bot.sessionId, bot.port))
+    );
 };
 
 main();

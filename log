@@ -1,9 +1,0 @@
-ProtocolError: Protocol error (Runtime.callFunctionOn): Target closed.
-    at [90mC:\xampp\htdocs\chatbot\[39mnode_modules\[4mpuppeteer-core[24m\lib\cjs\puppeteer\common\Connection.js:329:24
-    at new Promise (<anonymous>)
-    at CDPSessionImpl.send [90m(C:\xampp\htdocs\chatbot\[39mnode_modules\[4mpuppeteer-core[24m\lib\cjs\puppeteer\common\Connection.js:325:16[90m)[39m
-    at ExecutionContext._ExecutionContext_evaluate [90m(C:\xampp\htdocs\chatbot\[39mnode_modules\[4mpuppeteer-core[24m\lib\cjs\puppeteer\common\ExecutionContext.js:211:46[90m)[39m
-[90m    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
-    at async ExecutionContext.evaluate [90m(C:\xampp\htdocs\chatbot\[39mnode_modules\[4mpuppeteer-core[24m\lib\cjs\puppeteer\common\ExecutionContext.js:107:16[90m)[39m {
-  originalMessage: [32m''[39m
-}

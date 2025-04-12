@@ -560,6 +560,223 @@
             "hora": "11:55 a.\u00a0m.",
             "asesor": true,
             "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "2",
+            "fecha": "10\/4\/2025",
+            "hora": "05:12 p.\u00a0m."
+        },
+        {
+            "mensaje": "holis",
+            "fecha": "10\/4\/2025",
+            "hora": "05:12 p.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "dasdasdasdasdas",
+            "fecha": "10\/4\/2025",
+            "hora": "05:13 p.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "1",
+            "fecha": "10\/4\/2025",
+            "hora": "08:00 p.\u00a0m."
+        },
+        {
+            "mensaje": "si hola",
+            "fecha": "10\/4\/2025",
+            "hora": "08:00 p.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "como estas",
+            "fecha": "10\/4\/2025",
+            "hora": "08:00 p.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Inactividad por el usuario",
+            "fecha": "10\/4\/2025",
+            "hora": "08:05 p.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "2",
+            "fecha": "10\/4\/2025",
+            "hora": "09:14 p.\u00a0m."
+        },
+        {
+            "mensaje": "hola",
+            "fecha": "10\/4\/2025",
+            "hora": "09:14 p.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "1",
+            "fecha": "11\/4\/2025",
+            "hora": "11:36 a.\u00a0m."
+        },
+        {
+            "mensaje": "sofia este es mi celular",
+            "fecha": "11\/4\/2025",
+            "hora": "11:37 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "te amo",
+            "fecha": "11\/4\/2025",
+            "hora": "11:38 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Cliente busca ayuda en Estado de mi conexi\u00f3n",
+            "fecha": "11\/4\/2025",
+            "hora": "11:48 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "1",
+            "fecha": "11\/4\/2025",
+            "hora": "11:48 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "Cliente busca ayuda en Promociones actuales",
+            "fecha": "12\/4\/2025",
+            "hora": "12:22 a.\u00a0m."
+        },
+        {
+            "asesor": "Asesor 1",
+            "mensaje": "2",
+            "fecha": "12\/4\/2025",
+            "hora": "12:22 a.\u00a0m."
+        },
+        {
+            "asesor": "asesor1",
+            "mensaje": "Cliente busca ayuda en Promociones actuales",
+            "fecha": "12\/4\/2025",
+            "hora": "12:26 a.\u00a0m."
+        },
+        {
+            "asesor": "asesor1",
+            "mensaje": "2",
+            "fecha": "12\/4\/2025",
+            "hora": "12:26 a.\u00a0m."
+        },
+        {
+            "asesor": "asesor1",
+            "mensaje": "Cliente busca ayuda en Promociones actuales",
+            "fecha": "12\/4\/2025",
+            "hora": "12:31 a.\u00a0m."
+        },
+        {
+            "asesor": "asesor1",
+            "mensaje": "2",
+            "fecha": "12\/4\/2025",
+            "hora": "12:31 a.\u00a0m."
+        },
+        {
+            "asesor": "asesor1",
+            "mensaje": "Cliente busca ayuda en Promociones actuales",
+            "fecha": "12\/4\/2025",
+            "hora": "12:34 a.\u00a0m."
+        },
+        {
+            "asesor": "asesor1",
+            "mensaje": "2",
+            "fecha": "12\/4\/2025",
+            "hora": "12:34 a.\u00a0m."
+        },
+        {
+            "mensaje": "hola",
+            "fecha": "12\/4\/2025",
+            "hora": "12:34 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "asesor2",
+            "mensaje": "Cliente busca ayuda en Promociones actuales",
+            "fecha": "12\/4\/2025",
+            "hora": "12:39 a.\u00a0m."
+        },
+        {
+            "asesor": "asesor2",
+            "mensaje": "2",
+            "fecha": "12\/4\/2025",
+            "hora": "12:39 a.\u00a0m."
+        },
+        {
+            "asesor": "asesor1",
+            "mensaje": "Inactividad por el usuario",
+            "fecha": "12\/4\/2025",
+            "hora": "12:39 a.\u00a0m."
+        },
+        {
+            "mensaje": "hola",
+            "fecha": "12\/4\/2025",
+            "hora": "12:39 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "como vas",
+            "fecha": "12\/4\/2025",
+            "hora": "12:39 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "asesor2",
+            "mensaje": "Fhk",
+            "fecha": "12\/4\/2025",
+            "hora": "12:39 a.\u00a0m."
+        },
+        {
+            "mensaje": "bien",
+            "fecha": "12\/4\/2025",
+            "hora": "12:39 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "asesor2",
+            "mensaje": "Y",
+            "fecha": "12\/4\/2025",
+            "hora": "12:40 a.\u00a0m."
+        },
+        {
+            "mensaje": "h",
+            "fecha": "12\/4\/2025",
+            "hora": "12:40 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "asesor": "asesor2",
+            "mensaje": "H",
+            "fecha": "12\/4\/2025",
+            "hora": "12:40 a.\u00a0m."
+        },
+        {
+            "mensaje": "fds",
+            "fecha": "12\/4\/2025",
+            "hora": "12:40 a.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
         }
     ]
 }
