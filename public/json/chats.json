@@ -777,6 +777,27 @@
             "hora": "12:40 a.\u00a0m.",
             "asesor": true,
             "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "h",
+            "fecha": "19\/6\/2025",
+            "hora": "03:10 p.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "h",
+            "fecha": "19\/6\/2025",
+            "hora": "03:16 p.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
+        },
+        {
+            "mensaje": "h",
+            "fecha": "19\/6\/2025",
+            "hora": "03:29 p.\u00a0m.",
+            "asesor": true,
+            "enviadoDesdeWeb": true
         }
     ]
 }

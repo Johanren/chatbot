@@ -437,3 +437,48 @@ function guardarChatsEnServidor(chats) {
         .then(res => res.ok ? console.log("✅ Chats guardados en el servidor") : console.error("❌ Error al guardar"))
         .catch(err => console.error("❌ Error de red:", err));
 }
+
+//////// Select
+
+
+let asesorSeleccionado = null;
+
+document.getElementById("asesorSelect").addEventListener("change", (e) => {
+  const numeroAsesor = e.target.value;
+  if (!numeroAsesor) return;
+
+  asesorSeleccionado = numeroAsesor;
+  document.getElementById("modalTexto").innerText =
+    `¿Está seguro de redireccionar al asesor con número ${asesorSeleccionado}?`;
+  document.getElementById("modalConfirmacion").style.display = "block";
+});
+
+function cerrarModal() {
+  document.getElementById("modalConfirmacion").style.display = "none";
+  asesorSeleccionado = null;
+  document.getElementById("asesorSelect").value = ""; // Reset selección
+}
+
+function confirmarRedireccion() {
+  if (!asesorSeleccionado || !usuarioActivo) return alert("Datos incompletos");
+
+  fetch("php/enviar_asesor.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      numero_asesor: asesorSeleccionado,
+      numero_cliente: usuarioActivo,
+      usuario: usuarioActivo,
+      asesor: asesorActual // puedes enviar nombre si lo tienes
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log("📩 Resultado del redireccionamiento:", data);
+      cerrarModal();
+    })
+    .catch(err => {
+      console.error("❌ Error al redireccionar:", err);
+      cerrarModal();
+    });
+}

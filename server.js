@@ -82,5 +82,70 @@ wss.on('connection', (ws) => {
 
 
 app.use(express.static('public')); // Sirve la página HTML
+//////
+app.use(express.json()); // Para aceptar JSON
 
+app.post('/enviar', express.json(), (req, res) => {
+    const { numero, mensaje, asesor } = req.body;
+
+    if (!numero || !mensaje) {
+        return res.status(400).json({ success: false, error: 'Datos incompletos' });
+    }
+
+    const fechaHoraActual = new Date();
+    const fecha = fechaHoraActual.toLocaleDateString(); // dd/mm/yyyy
+    const hora = fechaHoraActual.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // hh:mm
+
+    if (!chatsWeb[numero]) chatsWeb[numero] = [];
+
+    chatsWeb[numero].push({
+        asesor: asesor || "asesor1",
+        usuario: numero,
+        mensaje: mensaje,
+        fecha: fecha,
+        hora: hora
+    });
+
+    console.log(`📲 Enviando a asesor ${numero}: ${mensaje}`);
+
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ tipo: 'actualizarWeb', chatsWeb }));
+        }
+    });
+
+    res.json({ success: true, enviado_a: numero });
+});
+
+
+app.post('/agregar-mensaje-cliente', (req, res) => {
+    const { numero, asesor, mensaje } = req.body;
+
+    if (!numero || !mensaje) {
+        return res.status(400).json({ success: false, error: 'Datos incompletos' });
+    }
+
+    const fechaHoraActual = new Date();
+    const fecha = fechaHoraActual.toLocaleDateString(); // dd/mm/yyyy
+    const hora = fechaHoraActual.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // hh:mm
+
+    if (!chatsWeb[numero]) chatsWeb[numero] = [];
+
+    chatsWeb[numero].push({
+        asesor: asesor || "asesor1",
+        usuario: numero,
+        mensaje: mensaje,
+        fecha: fecha,
+        hora: hora
+    });
+
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ tipo: 'actualizarWeb', chatsWeb }));
+        }
+    });
+
+    res.json({ success: true });
+});
+//////
 server.listen(3000, () => console.log('🚀 Servidor WebSocket en http://localhost:3000/login.html'));

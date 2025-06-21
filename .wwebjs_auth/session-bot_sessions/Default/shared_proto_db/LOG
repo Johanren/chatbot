@@ -1,2 +1,3 @@
-2025/04/11-11:34:54.395 16ac Creating DB C:\xampp\htdocs\chatbot\.wwebjs_auth\session-bot_sessions\Default\shared_proto_db since it was missing.
-2025/04/11-11:34:54.782 16ac Reusing MANIFEST C:\xampp\htdocs\chatbot\.wwebjs_auth\session-bot_sessions\Default\shared_proto_db/MANIFEST-000001
+2025/06/21-09:14:00.969 1e9c Reusing MANIFEST C:\xampp\htdocs\chatbot\.wwebjs_auth\session-bot_sessions\Default\shared_proto_db/MANIFEST-000001
+2025/06/21-09:14:00.969 1e9c Recovering log #3
+2025/06/21-09:14:00.970 1e9c Reusing old log C:\xampp\htdocs\chatbot\.wwebjs_auth\session-bot_sessions\Default\shared_proto_db/000003.log 

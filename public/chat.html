@@ -24,6 +24,11 @@
 
         <!-- Entrada de mensaje -->
         <div class="input-container" id="input-container">
+            <select id="asesorSelect">
+                <option value="">Seleccionar asesor</option>
+                <option value="573122146368">Carlos - 3140001122</option>
+                <option value="3139998811">Ana - 3139998811</option>
+            </select>
             <input type="text" id="message-input" placeholder="Escribe un mensaje...">
             <button onclick="enviarMensaje()">Enviar</button>
         </div>
@@ -42,6 +47,13 @@
             <ul id="lista-usuarios-activos"></ul>
             <button id="cerrarModal">X</button>
         </div>
+    </div>
+
+    <div id="modalConfirmacion"
+        style="display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px black;">
+        <p id="modalTexto">¿Está seguro de redireccionar al asesor?</p>
+        <button onclick="confirmarRedireccion()">Sí</button>
+        <button onclick="cerrarModal()">Cancelar</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
